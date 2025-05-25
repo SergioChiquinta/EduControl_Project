@@ -1,6 +1,6 @@
 <%-- 
-    Document   : index
-    Created on : 23-may-2025, 16:12:43
+    Document   : gestion_cursos
+    Created on : 24-may-2025, 17:50:26
     Author     : MonDSer
 --%>
 
