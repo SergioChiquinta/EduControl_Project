@@ -2,11 +2,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Usuario u = (Usuario) session.getAttribute("usuario");
-    if (u == null || !u.getRolUsu().equalsIgnoreCase("estudiante")) {
+    if (u == null || !u.getRol().equalsIgnoreCase("estudiante")) {
         response.sendRedirect("login.jsp");
         return;
     }
-    
+
     String mensaje = (String) session.getAttribute("mensaje_bienvenida");
 %>
 <!DOCTYPE html>

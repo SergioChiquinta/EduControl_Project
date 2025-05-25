@@ -11,6 +11,19 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
+            
+            .password-container {
+                position: relative;
+            }
+            
+            .toggle-password {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+                color: #1a3a82;
+            }
         </style>
     </head>
 
@@ -32,10 +45,14 @@
                     INICIAR SESIÓN
                 </h2>
                 <input class="w-full mb-3 rounded-full bg-[#bfbfbf] text-base text-center py-2 outline-none placeholder-gray-700 placeholder-opacity-100"
-                       placeholder="Usuario" type="text" name="usuario" />
+                       placeholder="Correo o Usuario" type="text" name="identificador" />
 
-                <input class="w-full mb-5 rounded-full bg-[#bfbfbf] text-base text-center py-2 outline-none placeholder-gray-700 placeholder-opacity-100"
-                       placeholder="Contraseña" type="password" name="clave" />
+                <div class="password-container mb-5">
+                    <input id="password-field" class="w-full rounded-full bg-[#bfbfbf] text-base text-center py-2 outline-none placeholder-gray-700 placeholder-opacity-100"
+                           placeholder="Contraseña" type="password" name="clave" />
+                    <i class="toggle-password fas fa-eye" onclick="togglePassword()"></i>
+                </div>
+                
                 <button class="bg-[#1a3a82] text-white text-base rounded-full px-6 py-2 mx-auto block" type="submit">
                     Ingresar
                 </button>
@@ -46,7 +63,22 @@
                 <% }%>
             </form>
         </div>
+        
+        <script>
+            function togglePassword() {
+                const passwordField = document.getElementById('password-field');
+                const toggleIcon = document.querySelector('.toggle-password');
+                
+                if (passwordField.type === 'password') {
+                    passwordField.type = 'text';
+                    toggleIcon.classList.remove('fa-eye');
+                    toggleIcon.classList.add('fa-eye-slash');
+                } else {
+                    passwordField.type = 'password';
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                }
+            }
+        </script>
     </body>
 </html>
-
-
