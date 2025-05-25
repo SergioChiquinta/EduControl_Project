@@ -1,4 +1,5 @@
 
+<%@page import="Model.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Usuario u = (Usuario) session.getAttribute("usuario");
@@ -20,7 +21,7 @@
         <div class="container">
             <a class="navbar-brand" href="#">EduControl</a>
             <span class="navbar-text text-white ms-auto">
-                <%= u.getNomUsu() %> (Estudiante)
+                <%= u.getUsername()%> (Estudiante)
             </span>
             <a href="LogoutController" class="btn btn-outline-light ms-3">Cerrar sesión</a>
         </div>

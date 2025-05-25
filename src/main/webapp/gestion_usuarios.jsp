@@ -96,7 +96,7 @@
                                 <% for (Usuario u : usuarios) { %>
                                 <tr>
                                     <td><%= u.getId() %></td>
-                                    <td><%= u.getNombre() %></td>
+                                    <td><%= u.getUsername()%></td>
                                     <td><%= u.getCorreo() %></td>
                                     <td>
                                         <span class="badge 

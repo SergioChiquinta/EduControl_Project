@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/GestionUsuariosController")
+@WebServlet("/GestionUsuariosController") 
 public class GestionUsuariosController extends HttpServlet {
     
     private UsuarioDAO usuarioDAO;

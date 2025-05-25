@@ -218,11 +218,13 @@
             try {
                 // Cambiar para cargar a través del controlador
                 let url = page;
-                if(page === 'gestionUsuarios.jsp') {
-                    url = 'GestionUsuariosController';
+                if(page === 'GestionUsuariosController') {
+                    url = 'gestion_usuarios.jsp';
                 }
 
                 const response = await fetch(url);
+                
+                
                 if (!response.ok) {
                     throw new Error('Error al cargar la página: ' + response.status);
                 }
