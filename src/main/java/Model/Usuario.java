@@ -1,44 +1,53 @@
 
 package Model;
 
-
 public class Usuario {
-    
-    private int IDUsu;
-    private String NomUsu;
-    private String RolUsu;
-    private String ContraseñaUsu;
+    private int id;
+    private String username;
+    private String correo;
+    private String rol;
 
-    public int getIDUsu() {
-        return IDUsu;
+    public Usuario(int id, String username, String correo, String rol) {
+        this.id = id;
+        this.username = username;
+        this.correo = correo;
+        this.rol = rol;
     }
 
-    public void setIDUsu(int IDUsu) {
-        this.IDUsu = IDUsu;
+    public Usuario() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public String getNomUsu() {
-        return NomUsu;
+    public int getId() {
+        return id;
     }
 
-    public void setNomUsu(String NomUsu) {
-        this.NomUsu = NomUsu;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getRolUsu() {
-        return RolUsu;
+    public String getCorreo() {
+        return correo;
     }
 
-    public void setRolUsu(String RolUsu) {
-        this.RolUsu = RolUsu;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
 
-    public String getContraseñaUsu() {
-        return ContraseñaUsu;
+    public String getRol() {
+        return rol;
     }
 
-    public void setContraseñaUsu(String ContraseñaUsu) {
-        this.ContraseñaUsu = ContraseñaUsu;
+    public void setRol(String rol) {
+        this.rol = rol;
     }
-    
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
 }

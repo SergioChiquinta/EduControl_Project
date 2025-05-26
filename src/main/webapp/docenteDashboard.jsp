@@ -1,12 +1,13 @@
 
+<%@page import="Model.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     Usuario u = (Usuario) session.getAttribute("usuario");
-    if (u == null || !u.getRolUsu().equalsIgnoreCase("docente")) {
+    if (u == null || !u.getRol().equalsIgnoreCase("docente")) {
         response.sendRedirect("login.jsp");
         return;
     }
-    
+
     String mensaje = (String) session.getAttribute("mensaje_bienvenida");
 %>
 <!DOCTYPE html>
@@ -20,7 +21,7 @@
         <div class="container">
             <a class="navbar-brand" href="#">EduControl</a>
             <span class="navbar-text text-white ms-auto">
-                <%= u.getNomUsu() %> (Docente)
+                <%= u.getUsername()%> (Docente)
             </span>
             <a href="LogoutController" class="btn btn-outline-light ms-3">Cerrar sesión</a>
         </div>
