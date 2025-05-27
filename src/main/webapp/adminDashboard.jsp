@@ -1,4 +1,5 @@
 
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="Model.Usuario" %>
 <%
@@ -117,9 +118,6 @@
                 <i class="fas fa-chevron-down"></i>
             </button>
             <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20">
-                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-blue-100">
-                    <i class="fas fa-user-circle mr-2"></i>Mi Perfil
-                </a>
                 <a href="LogoutController" class="block px-4 py-2 text-gray-800 hover:bg-blue-100">
                     <i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
                 </a>
@@ -144,49 +142,43 @@
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" class="flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="adminDocentes.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-chalkboard-teacher text-center w-6"></i>
                         <span class="sidebar-text ml-3">Docentes</span>
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" class="flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="adminEstudiantes.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-user-graduate text-center w-6"></i>
                         <span class="sidebar-text ml-3">Estudiantes</span>
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" class="flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="adminAsignaturas.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-book text-center w-6"></i>
                         <span class="sidebar-text ml-3">Asignaturas</span>
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" class="flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="adminCursos.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-door-open text-center w-6"></i>
                         <span class="sidebar-text ml-3">Cursos</span>
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" class="flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
-                        <i class="fas fa-tasks text-center w-6"></i>
-                        <span class="sidebar-text ml-3">Asignaciones</span>
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <a href="#" class="flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="adminImportar.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-file-import text-center w-6"></i>
                         <span class="sidebar-text ml-3">Importar Datos</span>
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" class="flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="reportes.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-file-export text-center w-6"></i>
                         <span class="sidebar-text ml-3">Reportes</span>
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" class="flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="configuracion.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-cog text-center w-6"></i>
                         <span class="sidebar-text ml-3">Configuración</span>
                     </a>
@@ -201,7 +193,7 @@
     <div id="mainContent" class="main-content content-expanded pt-20 p-6" style="transition: margin-left 0.3s ease">
         <!-- Aquí va tu contenido -->
     </div>
-    
+
     <script>
         // Elementos del DOM
         const sidebarToggle = document.getElementById('sidebarToggle');
@@ -294,8 +286,13 @@
         // Sistema de enrutamiento mejorado
         const routes = {
             'resumenDashboard.jsp': 'resumenDashboard.jsp',
-            'GestionUsuariosController.jsp': 'gestion_usuarios.jsp',
-            // Agregar más rutas según sea necesario
+            'GestionUsuariosController': 'gestion_usuarios.jsp',
+            'adminDocentes.jsp': 'adminDocentes.jsp',
+            'adminAsignaturas.jsp': 'adminAsignaturas.jsp',
+            'adminCursos.jsp': 'adminCursos.jsp',
+            'adminNotas.jsp': 'adminNotas.jsp',
+            'reportes.jsp': 'reportes.jsp',
+            'configuracion.jsp': 'configuracion.jsp',
         };
 
         // Cargar página con manejo de estado

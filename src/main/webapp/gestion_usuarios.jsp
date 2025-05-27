@@ -1,4 +1,5 @@
 
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="Model.Usuario" %>
 <%@page import="java.util.List" %>
@@ -187,7 +188,3 @@
     </div>
   </div>
 </div>
-
-<script>
-
-</script>
