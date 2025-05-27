@@ -33,7 +33,6 @@ public class GestionUsuariosController extends HttpServlet {
             return;
         }
 
-        String action = request.getParameter("action");
         String filtro = request.getParameter("filtro");
         String valor = request.getParameter("valor");
 
@@ -42,28 +41,6 @@ public class GestionUsuariosController extends HttpServlet {
             valor = null;
         }
 
-        try {
-            if ("nuevo".equals(action)) {
-                request.getRequestDispatcher("nuevoUsuario.jsp").forward(request, response);
-
-            } else if ("editar".equals(action)) {
-                int id = Integer.parseInt(request.getParameter("id"));
-                Usuario u = usuarioDAO.obtenerUsuario(id);
-                request.setAttribute("usuario", u);
-                request.getRequestDispatcher("editarUsuario.jsp").forward(request, response);
-
-            } else {
-                List<Usuario> usuarios = usuarioDAO.listarUsuarios(filtro, valor);
-                request.setAttribute("usuarios", usuarios);
-                request.setAttribute("filtro", filtro);
-                request.setAttribute("valor", valor);
-                request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Error al procesar la solicitud");
-            request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
-        }
     }
 
     @Override

@@ -31,7 +31,7 @@
             <h2 class="text-lg font-medium text-gray-700">Filtrar Usuarios</h2>
         </div>
         <div class="p-4">
-            <form method="get" action="GestionUsuariosController" 
+            <form method="get" enctype="multipart/form-data" action="GestionUsuariosController" 
                 onsubmit="buscarUsuarios(this); return false;" 
                 class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
@@ -123,7 +123,7 @@
 <div id="usuarioModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-black bg-opacity-50">
   <div class="flex items-center justify-center min-h-screen px-4">
     <div class="bg-white rounded-lg shadow-xl w-full max-w-lg">
-      <form id="usuarioForm" method="post" enctype="multipart/form-data" class="p-6 space-y-4" onsubmit="guardarUsuario(event)">
+      <form id="usuarioForm" method="post" class="p-6 space-y-4" onsubmit="guardarUsuario(event)">
         <input type="hidden" name="action" value="" id="modalAction">
         <input type="hidden" name="id" id="usuarioId">
 

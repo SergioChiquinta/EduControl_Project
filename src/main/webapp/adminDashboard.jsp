@@ -472,36 +472,37 @@
                     }
             });
         }
-
-        // Guardar usuario
+        
+        //Guardar cambios
         async function guardarUsuario(event) {
-        event.preventDefault();
-        const form = event.target;
+            event.preventDefault();
+            const form = event.target;
 
-        // Convertir el formulario a FormData
-        const formData = new FormData(form);
+            // Crear los datos como URLSearchParams en vez de FormData
+            const formData = new URLSearchParams(new FormData(form));
 
-        // Opción 1: Enviar como multipart/form-data
-        try {
-            const response = await fetch('GestionUsuariosController', {
-                method: 'POST',
-                body: formData,
-                // No establecer Content-Type, el navegador lo hará automáticamente
-            });
+            try {
+                const response = await fetch('GestionUsuariosController', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formData.toString() // Serializa para envío clásico
+                });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Error al guardar');
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Error al guardar');
+                }
+
+                const html = await response.text();
+                document.querySelector('#mainContent').innerHTML = html;
+                cerrarModal();
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message || 'Error al guardar el usuario');
             }
-
-            const html = await response.text();
-            document.querySelector('#mainContent').innerHTML = html;
-            cerrarModal();
-        } catch (error) {
-            console.error('Error:', error);
-            alert(error.message || 'Error al guardar el usuario');
         }
-    }
     </script>
 </body>
 </html>
