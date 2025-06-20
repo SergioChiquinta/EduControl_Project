@@ -1,3 +1,4 @@
+
 package Controller;
 
 import Dao.UsuarioDAO;
@@ -44,20 +45,33 @@ public class GestionUsuariosController extends HttpServlet {
 
         try {
             if ("nuevo".equals(action)) {
-                request.getRequestDispatcher("nuevoUsuario.jsp").forward(request, response);
+                // Solo indica que se debe abrir el modal de "nuevo"
+                request.setAttribute("mostrarModalNuevo", true);
+                List<Usuario> usuarios = usuarioDAO.listarTodos(); // Para seguir mostrando la tabla
+                request.setAttribute("usuarios", usuarios);
+                request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
 
             } else if ("editar".equals(action)) {
                 int id = Integer.parseInt(request.getParameter("id"));
                 Usuario u = usuarioDAO.obtenerUsuario(id);
-                request.setAttribute("usuario", u);
-                request.getRequestDispatcher("editarUsuario.jsp").forward(request, response);
+                request.setAttribute("usuarioEditar", u);
+                request.setAttribute("mostrarModalEditar", true);
+                List<Usuario> usuarios = usuarioDAO.listarTodos();
+                request.setAttribute("usuarios", usuarios);
+                request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
 
             } else {
-                List<Usuario> usuarios = usuarioDAO.listarUsuarios(filtro, valor);
-                request.setAttribute("usuarios", usuarios);
-                request.setAttribute("filtro", filtro);
-                request.setAttribute("valor", valor);
-                request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
+                if (filtro == null || filtro.isEmpty()) {
+                    List<Usuario> usuarios = usuarioDAO.listarTodos();
+                    request.setAttribute("usuarios", usuarios);
+                    request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
+                } else {
+                    List<Usuario> usuarios = usuarioDAO.listarUsuariosFiltrado(filtro, valor != null ? valor : "");
+                    request.setAttribute("usuarios", usuarios);
+                    request.setAttribute("filtro", filtro);
+                    request.setAttribute("valor", valor);
+                    request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -126,7 +140,7 @@ public class GestionUsuariosController extends HttpServlet {
             }
 
             // Redirigir a la lista de usuarios
-            response.sendRedirect("GestionUsuariosController");
+            request.getRequestDispatcher("GestionUsuariosController").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
