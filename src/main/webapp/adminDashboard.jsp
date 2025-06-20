@@ -32,6 +32,8 @@
     <title>Dashboard Admin - Newton College</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap 5 (desde CDN) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
     .sidebar {
         transition: all 0.3s;
@@ -142,18 +144,6 @@
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" data-page="adminDocentes.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
-                        <i class="fas fa-chalkboard-teacher text-center w-6"></i>
-                        <span class="sidebar-text ml-3">Docentes</span>
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <a href="#" data-page="adminEstudiantes.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
-                        <i class="fas fa-user-graduate text-center w-6"></i>
-                        <span class="sidebar-text ml-3">Estudiantes</span>
-                    </a>
-                </li>
-                <li class="mb-2">
                     <a href="#" data-page="adminAsignaturas.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-book text-center w-6"></i>
                         <span class="sidebar-text ml-3">Asignaturas</span>
@@ -163,12 +153,6 @@
                     <a href="#" data-page="adminCursos.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-door-open text-center w-6"></i>
                         <span class="sidebar-text ml-3">Cursos</span>
-                    </a>
-                </li>
-                <li class="mb-2">
-                    <a href="#" data-page="adminImportar.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
-                        <i class="fas fa-file-import text-center w-6"></i>
-                        <span class="sidebar-text ml-3">Importar Datos</span>
                     </a>
                 </li>
                 <li class="mb-2">
@@ -388,118 +372,13 @@
             } else {
                 loadPage('resumenDashboard.jsp');
             }
-        }
-        
-        function buscarUsuarios(form) {
-            const formData = new FormData(form);
-            const params = new URLSearchParams(formData);
-
-            loadPage(`GestionUsuariosController?${params.toString()}`);
-        }
-        
-        // Funciones para los modales
-        function abrirModalNuevo() {
-            document.getElementById('modalTitle').textContent = 'Nuevo Usuario';
-            document.getElementById('modalAction').value = 'crear';
-            document.getElementById('usuarioId').value = '';
-            document.getElementById('nombre').value = '';
-            document.getElementById('correo').value = '';
-            document.getElementById('contraseña').value = '';
-            document.getElementById('rol').value = 'administrador';
-            document.getElementById('usuarioModal').classList.remove('hidden');
-        }
-
-        function abrirModalEditar(id, nombre, correo, rol) {
-            document.getElementById('modalTitle').textContent = 'Editar Usuario';
-            document.getElementById('modalAction').value = 'editar';
-            document.getElementById('usuarioId').value = id;
-            document.getElementById('nombre').value = nombre;
-            document.getElementById('correo').value = correo;
-            document.getElementById('contraseña').value = ""; // Dejar en blanco
-            document.getElementById('contraseña').placeholder = "Dejar en blanco para no cambiar";
-            document.getElementById('rol').value = rol;
-            document.getElementById('usuarioModal').classList.remove('hidden');
-        }
-
-        function cerrarModal() {
-            document.getElementById('usuarioModal').classList.add('hidden');
-        }
-
-        // Eliminación con confirmación
-        let usuarioAEliminar = null;
-
-        function confirmarEliminacion(id) {
-            usuarioAEliminar = id;
-            document.getElementById('confirmarModal').classList.remove('hidden');
-        }
-
-        function cerrarConfirmacion() {
-            usuarioAEliminar = null;
-            document.getElementById('confirmarModal').classList.add('hidden');
-        }
-
-        // Por esto:
-        const confirmBtn = document.getElementById('confirmarEliminarBtn');
-        if (confirmBtn) {
-            confirmBtn.addEventListener('click', async function() {
-                // tu código aquí
-                if (!usuarioAEliminar) return;
-
-                    const formData = new FormData();
-                    formData.append('action', 'eliminar');
-                    formData.append('id', usuarioAEliminar);
-
-                    try {
-                        const response = await fetch('GestionUsuariosController', {
-                            method: 'POST',
-                            body: formData,
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        });
-
-                        if (!response.ok) throw new Error('Error al eliminar');
-
-                        const html = await response.text();
-                        document.querySelector('#mainContent').innerHTML = html;
-                        cerrarConfirmacion();
-                    } catch (error) {
-                        console.error('Error:', error);
-                        alert('Error al eliminar el usuario');
-                    }
-            });
-        }
-        
-        //Guardar cambios
-        async function guardarUsuario(event) {
-            event.preventDefault();
-            const form = event.target;
-
-            // Crear los datos como URLSearchParams en vez de FormData
-            const formData = new URLSearchParams(new FormData(form));
-
-            try {
-                const response = await fetch('GestionUsuariosController', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: formData.toString() // Serializa para envío clásico
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(errorText || 'Error al guardar');
-                }
-
-                const html = await response.text();
-                document.querySelector('#mainContent').innerHTML = html;
-                cerrarModal();
-            } catch (error) {
-                console.error('Error:', error);
-                alert(error.message || 'Error al guardar el usuario');
-            }
-        }
+        }  
     </script>
+    
+    <script src="js/gestion_usuarios.js"></script>
+    <!-- Bootstrap JS Bundle (incluye Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    
 </body>
 </html>
