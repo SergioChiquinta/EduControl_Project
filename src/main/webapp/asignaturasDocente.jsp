@@ -1,10 +1,11 @@
-
 <%@page contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-</head>
+    <title>Mis Asignaturas</title>
+    </head>
 <body>
     <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Mis Asignaturas</h2>
@@ -13,15 +14,24 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">1</td>
-                    <td class="px-6 py-4 whitespace-nowrap">Matemáticas I</td>
-                    <td class="px-6 py-4 whitespace-nowrap"><button class="text-blue-600 hover:underline">Ver Detalles</button></td>
-                </tr>
+                <c:choose>
+                    <c:when test="${not empty asignaturas}">
+                        <c:forEach var="asignatura" items="${asignaturas}" varStatus="loop">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">${loop.index + 1}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">${asignatura.nombre}</td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 text-center text-gray-500">No hay asignaturas disponibles para este docente.</td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
             </tbody>
         </table>
     </div>

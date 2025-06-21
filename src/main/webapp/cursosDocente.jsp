@@ -1,10 +1,11 @@
-
 <%@page contentType="text/html; charset=UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-</head>
+    <title>Mis Cursos</title>
+    </head>
 <body>
     <div class="bg-white rounded-lg shadow p-6">
         <h2 class="text-2xl font-bold text-gray-800 mb-6">Mis Cursos</h2>
@@ -18,12 +19,23 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                <tr>
-                    <td class="px-6 py-4">Matemáticas I</td>
-                    <td class="px-6 py-4">Salón A</td>
-                    <td class="px-6 py-4">2025-I</td>
-                    <td class="px-6 py-4">28</td>
-                </tr>
+                <c:choose>
+                    <c:when test="${not empty cursos}">
+                        <c:forEach var="curso" items="${cursos}">
+                            <tr>
+                                <td class="px-6 py-4">${curso.nombreMateria}</td>
+                                <td class="px-6 py-4">${curso.nombreSalon}</td>
+                                <td class="px-6 py-4">${curso.nombrePeriodo}</td>
+                                <td class="px-6 py-4">${curso.estudiantesInscritos}</td>
+                            </tr>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <tr>
+                            <td colspan="4" class="px-6 py-4 text-center text-gray-500">No hay cursos disponibles para este docente.</td>
+                        </tr>
+                    </c:otherwise>
+                </c:choose>
             </tbody>
         </table>
     </div>

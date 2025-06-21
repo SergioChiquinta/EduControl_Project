@@ -221,4 +221,27 @@ public class UsuarioDAO {
             return false;
         }
     }
+    
+    
+    //METODO DE OBTENER LA ID DEL DOCENTE POR LA ID DEL USUARIO
+    
+     public Integer obtenerIdDocentePorIdUsuario(int idUsuario) {
+        Integer docenteId = null;
+        // La consulta busca el 'id' de la tabla 'docentes'
+        // donde 'docentes.usuario_id' coincide con el 'idUsuario' proporcionado.
+        String sql = "SELECT id FROM docentes WHERE usuario_id = ?";
+        try (Connection con = clsConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    docenteId = rs.getInt("id"); // Obtiene el ID de la tabla 'docentes'
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el ID del docente por ID de usuario: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return docenteId;
+    }
 }

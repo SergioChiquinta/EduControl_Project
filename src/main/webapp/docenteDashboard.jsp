@@ -123,13 +123,13 @@
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" data-page="asignaturasDocente.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="AsignaturasDocenteController" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-users text-center w-6"></i>
                         <span class="sidebar-text ml-3">Asignaturas</span>
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" data-page="cursosDocente.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="CursosDocenteController" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-chalkboard-teacher text-center w-6"></i>
                         <span class="sidebar-text ml-3">Cursos</span>
                     </a>
