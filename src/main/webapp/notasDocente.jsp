@@ -7,7 +7,7 @@
 </head>
 <body>
     <div class="bg-white rounded-lg shadow p-6">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Registro de Notas</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Registro de Notas Prueba</h2>
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-blue-100">
                 <tr>
