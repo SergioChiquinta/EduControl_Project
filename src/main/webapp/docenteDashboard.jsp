@@ -135,7 +135,7 @@
                     </a>
                 </li>
                 <li class="mb-2">
-                    <a href="#" data-page="notasDocente.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                    <a href="#" data-page="AsignarNotaController" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                         <i class="fas fa-user-graduate text-center w-6"></i>
                         <span class="sidebar-text ml-3">Notas</span>
                     </a>

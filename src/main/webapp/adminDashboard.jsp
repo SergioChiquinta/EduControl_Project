@@ -271,10 +271,8 @@
         const routes = {
             'resumenDashboard.jsp': 'resumenDashboard.jsp',
             'GestionUsuariosController': 'gestion_usuarios.jsp',
-            'adminDocentes.jsp': 'adminDocentes.jsp',
             'adminAsignaturas.jsp': 'adminAsignaturas.jsp',
             'adminCursos.jsp': 'adminCursos.jsp',
-            'adminNotas.jsp': 'adminNotas.jsp',
             'reportes.jsp': 'reportes.jsp',
             'configuracion.jsp': 'configuracion.jsp',
         };

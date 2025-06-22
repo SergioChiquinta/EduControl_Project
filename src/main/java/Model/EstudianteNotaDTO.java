@@ -1,21 +1,12 @@
 
 package Model;
 
-public class Nota {
-    private int id;
+public class EstudianteNotaDTO {
     private int estudianteId;
-    private int evaluacionId;
+    private String nombreEstudiante;
     private Double nota;
     
     // Getters y Setters
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getEstudianteId() {
         return estudianteId;
     }
@@ -24,12 +15,12 @@ public class Nota {
         this.estudianteId = estudianteId;
     }
 
-    public int getEvaluacionId() {
-        return evaluacionId;
+    public String getNombreEstudiante() {
+        return nombreEstudiante;
     }
 
-    public void setEvaluacionId(int evaluacionId) {
-        this.evaluacionId = evaluacionId;
+    public void setNombreEstudiante(String nombreEstudiante) {
+        this.nombreEstudiante = nombreEstudiante;
     }
 
     public Double getNota() {
