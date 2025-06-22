@@ -2,138 +2,199 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="Model.Usuario" %>
 <%@page import="java.util.List" %>
+<%@page import="java.util.ArrayList" %>
 <%
-    List<Usuario> usuarios = (List<Usuario>) request.getAttribute("usuarios");
-    String filtro = (String) request.getAttribute("filtro");
-    String valor = (String) request.getAttribute("valor");
-    String error = (String) request.getAttribute("error");
     String exito = (String) request.getAttribute("exito");
+    String error = (String) request.getAttribute("error");
 %>
 
-<% if (error != null) { %>
-<div class="alert alert-danger"><%= error %></div>
-<% } %>
-
 <% if (exito != null) { %>
-<div class="alert alert-success"><%= exito %></div>
+    <div class="bg-green-100 text-green-800 p-4 rounded mb-4"><%= exito %></div>
 <% } %>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Gestión de Usuarios</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-4">
-        <h1 class="mb-4">Gestión de Usuarios</h1>
-        
-        <% if (error != null) { %>
-        <div class="alert alert-danger"><%= error %></div>
-        <% } %>
-        
-        <% if (exito != null) { %>
-        <div class="alert alert-success"><%= exito %></div>
-        <% } %>
-        
-        <!-- Filtros de búsqueda -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="mb-0">Filtrar Usuarios</h5>
-            </div>
-            <div class="card-body">
-                <form method="get" action="GestionUsuariosController" class="row g-3">
-                    <div class="col-md-4">
-                        <label for="filtro" class="form-label">Filtrar por:</label>
-                        <select id="filtro" name="filtro" class="form-select">
-                            <option value="">Todos</option>
-                            <option value="id" <%= "id".equals(filtro) ? "selected" : "" %>>ID</option>
-                            <option value="nombre" <%= "nombre".equals(filtro) ? "selected" : "" %>>Nombre</option>
-                            <option value="correo" <%= "correo".equals(filtro) ? "selected" : "" %>>Correo</option>
-                            <option value="rol" <%= "rol".equals(filtro) ? "selected" : "" %>>Rol</option>
-                        </select>
+<% if (error != null) { %>
+    <div class="bg-red-100 text-red-800 p-4 rounded mb-4"><%= error %></div>
+<% } %>
+
+<%
+    List<Usuario> usuarios = new ArrayList<>();
+    try {
+        List<Usuario> resultado = (List<Usuario>) request.getAttribute("usuarios");
+        if (resultado != null) {
+            usuarios = resultado;
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+    String filtro = (String) request.getAttribute("filtro");
+    String valor = (String) request.getAttribute("valor");
+%>
+<% if (usuarios.isEmpty()) { %>
+    <div class="bg-yellow-100 text-yellow-800 p-4 rounded">No se encontraron usuarios o hubo un error al cargarlos.</div>
+<% } %>
+
+<div class="max-w-7xl mx-auto mt-6 px-4">
+    <h2 class="text-2xl font-bold mb-4">Gestión de Usuarios</h2>
+
+    <!-- Botón para nuevo usuario -->
+    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mb-4" data-bs-toggle="modal" data-bs-target="#modalNuevo">Nuevo Usuario</button>
+
+    <!-- Filtro -->
+    <form class="flex flex-wrap gap-2 mb-6" method="get" action="GestionUsuariosController">
+        <select name="filtro" class="border rounded px-3 py-2">
+            <option value="Todos" <%= "Todos".equals(filtro) ? "selected" : "" %>>Todos</option>
+            <option value="nombre" <%= "nombre".equals(filtro) ? "selected" : "" %>>Nombre</option>
+            <option value="correo" <%= "correo".equals(filtro) ? "selected" : "" %>>Correo</option>
+            <option value="rol" <%= "rol".equals(filtro) ? "selected" : "" %>>Rol</option>
+        </select>
+        <input type="text" name="valor" value="<%= valor != null ? valor : "" %>" class="border rounded px-3 py-2 flex-1" placeholder="Buscar">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Filtrar</button>
+    </form>
+
+    <!-- Tabla de usuarios -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full table-auto border rounded-lg">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="px-4 py-2 border">ID</th>
+                    <th class="px-4 py-2 border">Nombre</th>
+                    <th class="px-4 py-2 border">Correo</th>
+                    <th class="px-4 py-2 border">Rol</th>
+                    <th class="px-4 py-2 border">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% for (Usuario u : usuarios) { %>
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-2 border"><%= u.getId() %></td>
+                    <td class="px-4 py-2 border"><%= u.getUsername() %></td>
+                    <td class="px-4 py-2 border"><%= u.getCorreo() %></td>
+                    <td class="px-4 py-2 border"><%= u.getRol() %></td>
+                    <td class="px-4 py-2 border space-x-2">
+                        <button class="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600" data-bs-toggle="modal" data-bs-target="#modalEditar<%= u.getId() %>">Editar</button>
+                        <% if (!"administrador".equals(u.getRol())) { %>
+                            <button class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700" type="button" data-bs-toggle="modal" data-bs-target="#modalEliminarUsuario" data-user-id="<%= u.getId() %>">Eliminar</button>
+                        <% } %>
+                    </td>
+                </tr>
+
+                <!-- Modal Editar -->
+                <div class="modal fade" id="modalEditar<%= u.getId() %>" tabindex="-1">
+                    <div class="modal-dialog">
+                        <form action="GestionUsuariosController" method="post" class="modal-content">
+                            <input type="hidden" name="action" value="actualizar">
+                            <input type="hidden" name="id" value="<%= u.getId() %>">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Editar Usuario</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label>Nombre</label>
+                                    <input type="text" name="nombre" class="form-control" value="<%= u.getUsername() %>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Correo</label>
+                                    <input type="email" name="correo" class="form-control" value="<%= u.getCorreo() %>" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Rol</label>
+                                    <select name="rol" class="form-select">
+                                        <option value="estudiante" <%= "estudiante".equals(u.getRol()) ? "selected" : "" %>>Estudiante</option>
+                                        <option value="docente" <%= "docente".equals(u.getRol()) ? "selected" : "" %>>Docente</option>
+                                        <option value="administrador" <%= "administrador".equals(u.getRol()) ? "selected" : "" %>>Administrador</option>
+                                    </select>
+                                </div>
+                                <p class="text-muted"><em>La contraseña no puede ser editada por el administrador.</em></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                        </form>
                     </div>
-                    <div class="col-md-6">
-                        <label for="valor" class="form-label">Valor:</label>
-                        <input type="text" id="valor" name="valor" class="form-control" 
-                               value="<%= valor != null ? valor : "" %>">
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary me-2">
-                            <i class="fas fa-search"></i> Buscar
-                        </button>
-                        <a href="GestionUsuariosController" class="btn btn-secondary">
-                            <i class="fas fa-sync-alt"></i>
-                        </a>
-                    </div>
-                </form>
+                </div>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modales adicionales (crear/eliminar) conservan Bootstrap) -->
+<!-- Modal Crear -->
+<div class="modal fade" id="modalNuevo" tabindex="-1">
+    <div class="modal-dialog">
+        <form action="GestionUsuariosController" method="post" class="modal-content">
+            <input type="hidden" name="action" value="crear">
+            <div class="modal-header">
+                <h5 class="modal-title">Crear Usuario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-        </div>
-        
-        <!-- Tabla de usuarios -->
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Lista de Usuarios</h5>
-                <a href="GestionUsuariosController?action=nuevo" class="btn btn-success">
-                    <i class="fas fa-plus"></i> Nuevo Usuario
-                </a>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nombre</th>
-                                <th>Correo</th>
-                                <th>Rol</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% if (usuarios != null && !usuarios.isEmpty()) { %>
-                                <% for (Usuario u : usuarios) { %>
-                                <tr>
-                                    <td><%= u.getId() %></td>
-                                    <td><%= u.getUsername()%></td>
-                                    <td><%= u.getCorreo() %></td>
-                                    <td>
-                                        <span class="badge 
-                                            <%= "administrador".equals(u.getRol()) ? "bg-primary" : 
-                                               "docente".equals(u.getRol()) ? "bg-success" : "bg-info" %>">
-                                            <%= u.getRol() %>
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="GestionUsuariosController?action=editar&id=<%= u.getId() %>" 
-                                           class="btn btn-sm btn-warning" title="Editar">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form method="post" action="GestionUsuariosController" style="display:inline;">
-                                            <input type="hidden" name="action" value="eliminar">
-                                            <input type="hidden" name="id" value="<%= u.getId() %>">
-                                            <button type="submit" class="btn btn-sm btn-danger" 
-                                                    onclick="return confirm('¿Está seguro de eliminar este usuario?')"
-                                                    title="Eliminar">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                <% } %>
-                            <% } else { %>
-                                <tr>
-                                    <td colspan="5" class="text-center">No se encontraron usuarios</td>
-                                </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label>Nombre</label>
+                    <input type="text" name="nombre" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Correo</label>
+                    <input type="email" name="correo" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Contraseña Inicial</label>
+                    <input type="password" name="password" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label>Rol</label>
+                    <select name="rol" class="form-select" required>
+                        <option value="estudiante">Estudiante</option>
+                        <option value="docente">Docente</option>
+                        <option value="administrador">Administrador</option>
+                    </select>
                 </div>
             </div>
-        </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-success">Crear Usuario</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            </div>
+        </form>
     </div>
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+</div>
+
+<!-- Modal de confirmación para eliminar -->
+<div class="modal fade" id="modalEliminarUsuario" tabindex="-1" aria-labelledby="modalEliminarUsuarioLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <form action="GestionUsuariosController" method="post">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="modalEliminarUsuarioLabel">Confirmar Eliminación</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          ¿Estás seguro de que deseas eliminar este usuario?
+        </div>
+        <input type="hidden" name="action" value="eliminar">
+        <input type="hidden" name="id" id="idUsuarioEliminar">
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-danger">Eliminar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<c:if test="${mostrarModalNuevo}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            $('#modalNuevoUsuario').modal('show');
+        });
+    </script>
+</c:if>
+
+<c:if test="${mostrarModalEditar}">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            $('#modalEditarUsuario').modal('show');
+        });
+    </script>
+</c:if>

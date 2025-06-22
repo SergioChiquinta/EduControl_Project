@@ -42,29 +42,17 @@ public class UsuarioDAO {
     }
 
     // Listar usuarios con filtro
-    public List<Usuario> listarUsuarios(String filtro, String valor) {
+    public List<Usuario> listarUsuariosFiltrado(String filtro, String valor) {
         List<Usuario> usuarios = new ArrayList<>();
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
+        String sql = "{CALL sp_listar_usuarios_filtrado(?, ?)}";
 
-        try {
-            conn = conexion.getConnection();
-            StringBuilder sql = new StringBuilder("SELECT id, nombre, correo, rol FROM usuarios");
+        try (Connection conn = conexion.getConnection();
+             CallableStatement stmt = conn.prepareCall(sql)) {
 
-            if (filtro != null && !filtro.isEmpty() && valor != null && !valor.isEmpty()) {
-                sql.append(" WHERE ").append(filtro).append(" LIKE ?");
-            }
+            stmt.setString(1, filtro);
+            stmt.setString(2, valor);
 
-            sql.append(" ORDER BY nombre");
-
-            stmt = conn.prepareStatement(sql.toString());
-
-            if (filtro != null && !filtro.isEmpty() && valor != null && !valor.isEmpty()) {
-                stmt.setString(1, "%" + valor + "%");
-            }
-
-            rs = stmt.executeQuery();
+            ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 usuarios.add(new Usuario(
@@ -74,68 +62,54 @@ public class UsuarioDAO {
                     rs.getString("rol")
                 ));
             }
+
         } catch (SQLException e) {
-            System.err.println("Error en listarUsuarios: " + e.getMessage());
-            throw new RuntimeException("Error al listar usuarios", e);
-        } finally {
-            // Cerrar recursos
-            try { if (rs != null) rs.close(); } catch (SQLException e) { /* ignorar */ }
-            try { if (stmt != null) stmt.close(); } catch (SQLException e) { /* ignorar */ }
-            try { if (conn != null) conn.close(); } catch (SQLException e) { /* ignorar */ }
+            System.err.println("Error en listarUsuariosFiltrado: " + e.getMessage());
+        }
+
+        return usuarios;
+    }
+    
+    // Listar todos los usuarios si no hay filtros
+    public List<Usuario> listarTodos() {
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT id, nombre, correo, rol FROM usuarios";
+
+        try (Connection conn = conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                usuarios.add(new Usuario(
+                    rs.getInt("id"),
+                    rs.getString("nombre"),
+                    rs.getString("correo"),
+                    rs.getString("rol")
+                ));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         return usuarios;
     }
 
-    // Obtener usuario por ID
-    public Usuario obtenerUsuario(int id) {
-        Usuario usuario = null;
-        String sql = "SELECT id, nombre, correo, rol FROM usuarios WHERE id = ?";
-
-        try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                usuario = new Usuario(
-                    rs.getInt("id"),
-                    rs.getString("nombre"),
-                    rs.getString("correo"),
-                    rs.getString("rol")
-                );
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return usuario;
-    }
-
     // Crear usuario nuevo
     public boolean crearUsuario(Usuario usuario, String password) {
-        String sql = "INSERT INTO usuarios (nombre, correo, rol, contraseña) VALUES (?, ?, ?, SHA2(?, 256))";
+        String sql = "{CALL sp_crear_usuario(?, ?, ?, ?)}";
 
         try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             CallableStatement stmt = conn.prepareCall(sql)) {
 
-            stmt.setString(1, usuario.getUsername());
-            stmt.setString(2, usuario.getCorreo());
-            stmt.setString(3, usuario.getRol());
-            stmt.setString(4, password);
+            stmt.setString(1, usuario.getUsername()); // nombre
+            stmt.setString(2, usuario.getCorreo());   // correo
+            stmt.setString(3, password);              // contraseña sin encriptar, se cifra en SP
+            stmt.setString(4, usuario.getRol());      // rol (docente, estudiante, administrador)
 
-            int filas = stmt.executeUpdate();
-            
-            if (filas > 0) {
-                ResultSet rs = stmt.getGeneratedKeys();
-                if (rs.next()) {
-                    usuario.setId(rs.getInt(1));
-                }
-                return true;
-            }
-            return false;
+            stmt.execute();
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -145,37 +119,18 @@ public class UsuarioDAO {
 
     // Actualizar usuario
     public boolean actualizarUsuario(Usuario usuario) {
-        String sql = "UPDATE usuarios SET nombre=?, correo=?, rol=? WHERE id=?";
+        String sql = "{CALL sp_actualizar_usuario(?, ?, ?, ?)}";
 
         try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             CallableStatement stmt = conn.prepareCall(sql)) {
 
-            stmt.setString(1, usuario.getUsername());
-            stmt.setString(2, usuario.getCorreo());
-            stmt.setString(3, usuario.getRol());
-            stmt.setInt(4, usuario.getId());
+            stmt.setInt(1, usuario.getId());
+            stmt.setString(2, usuario.getUsername());
+            stmt.setString(3, usuario.getCorreo());
+            stmt.setString(4, usuario.getRol());
 
-            int filas = stmt.executeUpdate();
-            return filas > 0;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    // Actualizar contraseña
-    public boolean actualizarPassword(int id, String nuevaPassword) {
-        String sql = "UPDATE usuarios SET contraseña = SHA2(?, 256) WHERE id = ?";
-
-        try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, nuevaPassword);
-            stmt.setInt(2, id);
-
-            int filas = stmt.executeUpdate();
-            return filas > 0;
+            stmt.execute();
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,14 +140,14 @@ public class UsuarioDAO {
 
     // Eliminar usuario por ID
     public boolean eliminarUsuario(int id) {
-        String sql = "DELETE FROM usuarios WHERE id = ?";
+        String sql = "{CALL sp_eliminar_usuario(?)}";
 
         try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             CallableStatement stmt = conn.prepareCall(sql)) {
 
             stmt.setInt(1, id);
-            int filas = stmt.executeUpdate();
-            return filas > 0;
+            stmt.execute();
+            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -219,5 +174,74 @@ public class UsuarioDAO {
         }
 
         return false;
+    }
+    
+    // Obtener usuario por ID
+    public Usuario obtenerUsuario(int id) {
+        Usuario usuario = null;
+        String sql = "SELECT id, nombre, correo, rol FROM usuarios WHERE id = ?";
+
+        try (Connection conn = conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                usuario = new Usuario(
+                    rs.getInt("id"),
+                    rs.getString("nombre"),
+                    rs.getString("correo"),
+                    rs.getString("rol")
+                );
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return usuario;
+    }
+    
+    // Actualizar contraseña
+    public boolean actualizarPassword(int id, String nuevaPassword) {
+        String sql = "UPDATE usuarios SET contraseña = SHA2(?, 256) WHERE id = ?";
+
+        try (Connection conn = conexion.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, nuevaPassword);
+            stmt.setInt(2, id);
+
+            int filas = stmt.executeUpdate();
+            return filas > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
+    //METODO DE OBTENER LA ID DEL DOCENTE POR LA ID DEL USUARIO
+    
+     public Integer obtenerIdDocentePorIdUsuario(int idUsuario) {
+        Integer docenteId = null;
+        // La consulta busca el 'id' de la tabla 'docentes'
+        // donde 'docentes.usuario_id' coincide con el 'idUsuario' proporcionado.
+        String sql = "SELECT id FROM docentes WHERE usuario_id = ?";
+        try (Connection con = clsConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    docenteId = rs.getInt("id"); // Obtiene el ID de la tabla 'docentes'
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el ID del docente por ID de usuario: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return docenteId;
     }
 }

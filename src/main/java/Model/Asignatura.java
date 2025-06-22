@@ -3,44 +3,42 @@ package Model;
 
 
 public class Asignatura {
-    private int idAsig;
-    private String nomAsig;
-    private int idCurso;
-    private int idAdmin;
+    private int id;
+    private String nombre;
+    private int docenteId; //no se muestra en la vista pero por siacaso lo pongo
+
+    public Asignatura() {
+    }
+
+    public Asignatura(int id, String nombre, int docenteId) {
+        this.id = id;
+        this.nombre = nombre;
+        this.docenteId = docenteId;
+    }
 
     // Getters y Setters
-
-    public int getIdAsig() {
-        return idAsig;
+    public int getId() {
+        return id;
     }
 
-    public void setIdAsig(int idAsig) {
-        this.idAsig = idAsig;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getNomAsig() {
-        return nomAsig;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setNomAsig(String nomAsig) {
-        this.nomAsig = nomAsig;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public int getIdCurso() {
-        return idCurso;
+    public int getDocenteId() {
+        return docenteId;
     }
 
-    public void setIdCurso(int idCurso) {
-        this.idCurso = idCurso;
+    public void setDocenteId(int docenteId) {
+        this.docenteId = docenteId;
     }
-
-    public int getIdAdmin() {
-        return idAdmin;
-    }
-
-    public void setIdAdmin(int idAdmin) {
-        this.idAdmin = idAdmin;
-    }
-    
 }
 
