@@ -1,8 +1,8 @@
 
 package Model;
 
-
 public class Docente {
+
     private int codigoDcte;
     private String nomDcte;
     private String apeDcte;
@@ -10,7 +10,6 @@ public class Docente {
     private int idUsu;
 
     // Getters y Setters
-
     public int getCodigoDcte() {
         return codigoDcte;
     }
@@ -50,6 +49,5 @@ public class Docente {
     public void setIdUsu(int idUsu) {
         this.idUsu = idUsu;
     }
-    
-}
 
+}

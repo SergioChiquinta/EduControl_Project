@@ -8,16 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioDAO {
+
     private final clsConnection conexion = new clsConnection();
 
     // Validar usuario para login
     public Usuario validarUsuario(String identificador, String clave) {
         Usuario usuario = null;
-        String sql = "SELECT id, nombre, correo, rol FROM usuarios " +
-                     "WHERE (correo = ? OR nombre = ?) AND contraseña = SHA2(?, 256)";
+        String sql = "SELECT id, nombre, correo, rol FROM usuarios "
+                + "WHERE (correo = ? OR nombre = ?) AND contraseña = SHA2(?, 256)";
 
-        try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = conexion.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, identificador);
             stmt.setString(2, identificador);
@@ -27,10 +27,10 @@ public class UsuarioDAO {
 
             if (rs.next()) {
                 usuario = new Usuario(
-                    rs.getInt("id"),
-                    rs.getString("nombre"),
-                    rs.getString("correo"),
-                    rs.getString("rol")
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("correo"),
+                        rs.getString("rol")
                 );
             }
 
@@ -46,8 +46,7 @@ public class UsuarioDAO {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "{CALL sp_listar_usuarios_filtrado(?, ?)}";
 
-        try (Connection conn = conexion.getConnection();
-             CallableStatement stmt = conn.prepareCall(sql)) {
+        try (Connection conn = conexion.getConnection(); CallableStatement stmt = conn.prepareCall(sql)) {
 
             stmt.setString(1, filtro);
             stmt.setString(2, valor);
@@ -56,10 +55,10 @@ public class UsuarioDAO {
 
             while (rs.next()) {
                 usuarios.add(new Usuario(
-                    rs.getInt("id"),
-                    rs.getString("nombre"),
-                    rs.getString("correo"),
-                    rs.getString("rol")
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("correo"),
+                        rs.getString("rol")
                 ));
             }
 
@@ -69,23 +68,22 @@ public class UsuarioDAO {
 
         return usuarios;
     }
-    
+
     // Listar todos los usuarios si no hay filtros
     public List<Usuario> listarTodos() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT id, nombre, correo, rol FROM usuarios";
 
-        try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = conexion.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
                 usuarios.add(new Usuario(
-                    rs.getInt("id"),
-                    rs.getString("nombre"),
-                    rs.getString("correo"),
-                    rs.getString("rol")
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("correo"),
+                        rs.getString("rol")
                 ));
             }
 
@@ -100,8 +98,7 @@ public class UsuarioDAO {
     public boolean crearUsuario(Usuario usuario, String password) {
         String sql = "{CALL sp_crear_usuario(?, ?, ?, ?)}";
 
-        try (Connection conn = conexion.getConnection();
-             CallableStatement stmt = conn.prepareCall(sql)) {
+        try (Connection conn = conexion.getConnection(); CallableStatement stmt = conn.prepareCall(sql)) {
 
             stmt.setString(1, usuario.getUsername()); // nombre
             stmt.setString(2, usuario.getCorreo());   // correo
@@ -121,8 +118,7 @@ public class UsuarioDAO {
     public boolean actualizarUsuario(Usuario usuario) {
         String sql = "{CALL sp_actualizar_usuario(?, ?, ?, ?)}";
 
-        try (Connection conn = conexion.getConnection();
-             CallableStatement stmt = conn.prepareCall(sql)) {
+        try (Connection conn = conexion.getConnection(); CallableStatement stmt = conn.prepareCall(sql)) {
 
             stmt.setInt(1, usuario.getId());
             stmt.setString(2, usuario.getUsername());
@@ -142,8 +138,7 @@ public class UsuarioDAO {
     public boolean eliminarUsuario(int id) {
         String sql = "{CALL sp_eliminar_usuario(?)}";
 
-        try (Connection conn = conexion.getConnection();
-             CallableStatement stmt = conn.prepareCall(sql)) {
+        try (Connection conn = conexion.getConnection(); CallableStatement stmt = conn.prepareCall(sql)) {
 
             stmt.setInt(1, id);
             stmt.execute();
@@ -159,8 +154,7 @@ public class UsuarioDAO {
     public boolean existeCorreo(String correo) {
         String sql = "SELECT COUNT(*) FROM usuarios WHERE correo = ?";
 
-        try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = conexion.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, correo);
             ResultSet rs = stmt.executeQuery();
@@ -175,24 +169,23 @@ public class UsuarioDAO {
 
         return false;
     }
-    
+
     // Obtener usuario por ID
     public Usuario obtenerUsuario(int id) {
         Usuario usuario = null;
         String sql = "SELECT id, nombre, correo, rol FROM usuarios WHERE id = ?";
 
-        try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = conexion.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 usuario = new Usuario(
-                    rs.getInt("id"),
-                    rs.getString("nombre"),
-                    rs.getString("correo"),
-                    rs.getString("rol")
+                        rs.getInt("id"),
+                        rs.getString("nombre"),
+                        rs.getString("correo"),
+                        rs.getString("rol")
                 );
             }
 
@@ -202,13 +195,12 @@ public class UsuarioDAO {
 
         return usuario;
     }
-    
+
     // Actualizar contraseña
     public boolean actualizarPassword(int id, String nuevaPassword) {
         String sql = "UPDATE usuarios SET contraseña = SHA2(?, 256) WHERE id = ?";
 
-        try (Connection conn = conexion.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = conexion.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, nuevaPassword);
             stmt.setInt(2, id);
@@ -221,17 +213,14 @@ public class UsuarioDAO {
             return false;
         }
     }
-    
-    
+
     //METODO DE OBTENER LA ID DEL DOCENTE POR LA ID DEL USUARIO
-    
-     public Integer obtenerIdDocentePorIdUsuario(int idUsuario) {
+    public Integer obtenerIdDocentePorIdUsuario(int idUsuario) {
         Integer docenteId = null;
         // La consulta busca el 'id' de la tabla 'docentes'
         // donde 'docentes.usuario_id' coincide con el 'idUsuario' proporcionado.
         String sql = "SELECT id FROM docentes WHERE usuario_id = ?";
-        try (Connection con = clsConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = clsConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, idUsuario);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {

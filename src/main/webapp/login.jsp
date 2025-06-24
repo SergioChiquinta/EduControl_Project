@@ -9,22 +9,7 @@
         <script src="https://cdn.tailwindcss.com">
         </script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Times+New+Roman&display=swap');
-            
-            .password-container {
-                position: relative;
-            }
-            
-            .toggle-password {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                cursor: pointer;
-                color: #1a3a82;
-            }
-        </style>
+        <link rel="stylesheet" href="css/login.css">
     </head>
 
     <body class="bg-[#03397b] flex items-center justify-center min-h-screen font-[Times_New_Roman]">
@@ -34,7 +19,7 @@
             <h1 class="text-white text-4xl font-bold mb-2">
                 NEWTON
                 <span class="font-normal">
-                COLLEGE
+                    COLLEGE
                 </span>
             </h1>
             <p class="text-white text-base mb-8">
@@ -52,7 +37,7 @@
                            placeholder="Contraseña" type="password" name="clave" />
                     <i class="toggle-password fas fa-eye" onclick="togglePassword()"></i>
                 </div>
-                
+
                 <button class="bg-[#1a3a82] text-white text-base rounded-full px-6 py-2 mx-auto block" type="submit">
                     Ingresar
                 </button>
@@ -63,22 +48,8 @@
                 <% }%>
             </form>
         </div>
-        
-        <script>
-            function togglePassword() {
-                const passwordField = document.getElementById('password-field');
-                const toggleIcon = document.querySelector('.toggle-password');
-                
-                if (passwordField.type === 'password') {
-                    passwordField.type = 'text';
-                    toggleIcon.classList.remove('fa-eye');
-                    toggleIcon.classList.add('fa-eye-slash');
-                } else {
-                    passwordField.type = 'password';
-                    toggleIcon.classList.remove('fa-eye-slash');
-                    toggleIcon.classList.add('fa-eye');
-                }
-            }
-        </script>
+
+        <script src="js/login.js"></script>
+
     </body>
 </html>

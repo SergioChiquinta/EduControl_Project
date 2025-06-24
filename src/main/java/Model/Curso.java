@@ -1,16 +1,16 @@
 
 package Model;
 
-
 public class Curso {
+
     private int id;
     private int materiaId;
     private int salonId;
     private int periodoId;
-    private String nombreMateria; 
-    private String nombreSalon;   
-    private String nombrePeriodo; 
-    private int estudiantesInscritos; 
+    private String nombreMateria;
+    private String nombreSalon;
+    private String nombrePeriodo;
+    private int estudiantesInscritos;
 
     public Curso() {
     }

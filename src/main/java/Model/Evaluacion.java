@@ -2,13 +2,14 @@
 package Model;
 
 public class Evaluacion {
+
     private int id;
     private String nombre;
     private double peso;
     private int materiaId;
     private int periodoId;
     private int tipoId;
-    
+
     // Getters y Setters
     public int getId() {
         return id;

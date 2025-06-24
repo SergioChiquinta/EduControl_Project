@@ -14,23 +14,22 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
-
 @WebServlet("/CursosDocenteController")
 public class CursosDocenteController extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
     private CursoDAO cursoDao;
     private UsuarioDAO usuarioDao;
 
-
     public CursosDocenteController() {
         super();
         this.cursoDao = new CursoDAO();
-        this.usuarioDao = new UsuarioDAO(); 
+        this.usuarioDao = new UsuarioDAO();
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-         HttpSession session = request.getSession(false); // No crear una nueva sesión si no existe
+        HttpSession session = request.getSession(false); // No crear una nueva sesión si no existe
 
         Usuario usuarioLogeado = null;
         int docenteId = -1; // Valor por defecto

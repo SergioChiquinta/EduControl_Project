@@ -1,3 +1,4 @@
+
 package net.codejava.educontrol_project.resources;
 
 import jakarta.ws.rs.GET;
@@ -6,13 +7,13 @@ import jakarta.ws.rs.core.Response;
 
 /**
  *
- * @author 
+ * @author
  */
 @Path("jakartaee10")
 public class JakartaEE10Resource {
-    
+
     @GET
-    public Response ping(){
+    public Response ping() {
         return Response
                 .ok("ping Jakarta EE")
                 .build();

@@ -1,8 +1,8 @@
 
 package Model;
 
-
 public class Estudiante {
+
     private int codigoStu;
     private String nomStu;
     private String apeStu;
@@ -11,7 +11,6 @@ public class Estudiante {
     private int idUsu;
 
     // Getters y Setters
-
     public int getCodigoStu() {
         return codigoStu;
     }
@@ -59,6 +58,5 @@ public class Estudiante {
     public void setIdUsu(int idUsu) {
         this.idUsu = idUsu;
     }
-    
-}
 
+}

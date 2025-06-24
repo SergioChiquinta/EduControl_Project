@@ -2,11 +2,12 @@
 package Model;
 
 public class Nota {
+
     private int id;
     private int estudianteId;
     private int evaluacionId;
     private Double nota;
-    
+
     // Getters y Setters
     public int getId() {
         return id;

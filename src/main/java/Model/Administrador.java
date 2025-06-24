@@ -1,8 +1,8 @@
 
 package Model;
 
-
 public class Administrador {
+
     private int idAdmin;
     private String nomAdmin;
     private String apeAdmin;
@@ -10,7 +10,6 @@ public class Administrador {
     private String contraseñaAdmin;
 
     // Getters y Setters
-
     public int getIdAdmin() {
         return idAdmin;
     }
@@ -50,6 +49,5 @@ public class Administrador {
     public void setContraseñaAdmin(String contraseñaAdmin) {
         this.contraseñaAdmin = contraseñaAdmin;
     }
-    
-}
 
+}

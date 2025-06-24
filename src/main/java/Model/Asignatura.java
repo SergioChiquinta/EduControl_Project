@@ -1,8 +1,8 @@
 
 package Model;
 
-
 public class Asignatura {
+
     private int id;
     private String nombre;
     private int docenteId; //no se muestra en la vista pero por siacaso lo pongo
@@ -41,4 +41,3 @@ public class Asignatura {
         this.docenteId = docenteId;
     }
 }
-

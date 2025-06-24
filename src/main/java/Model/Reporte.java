@@ -3,8 +3,8 @@ package Model;
 
 import java.util.Date;
 
-
 public class Reporte {
+
     private int idReporte;
     private double promGralReporte;
     private Date fechaGenReporte;
@@ -13,7 +13,6 @@ public class Reporte {
     private int idUsu;
 
     // Getters y Setters
-
     public int getIdReporte() {
         return idReporte;
     }
@@ -61,5 +60,5 @@ public class Reporte {
     public void setIdUsu(int idUsu) {
         this.idUsu = idUsu;
     }
-    
+
 }

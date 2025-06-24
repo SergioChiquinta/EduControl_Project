@@ -2,10 +2,11 @@
 package Model;
 
 public class EstudianteNotaDTO {
+
     private int estudianteId;
     private String nombreEstudiante;
     private Double nota;
-    
+
     // Getters y Setters
     public int getEstudianteId() {
         return estudianteId;

@@ -7,6 +7,7 @@ import Model.Evaluacion;
 import Model.EstudianteNotaDTO;
 import Model.Usuario;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,18 +17,21 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
+@MultipartConfig
 @WebServlet("/AsignarNotaController")
 public class AsignarNotaController extends HttpServlet {
+
     private static final long serialVersionUID = 1L;
     private NotaDAO notaDao;
     private UsuarioDAO usuarioDao;
-    
+
     public AsignarNotaController() throws SQLException {
         super();
         this.notaDao = new NotaDAO();
         this.usuarioDao = new UsuarioDAO();
     }
-    
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
         response.setCharacterEncoding("UTF-8");
@@ -63,27 +67,34 @@ public class AsignarNotaController extends HttpServlet {
             // Obtener salones y evaluaciones para el docente
             List<String> salones = notaDao.obtenerSalonesPorDocente(docenteId);
             List<Evaluacion> evaluaciones = notaDao.obtenerEvaluacionesPorDocente(docenteId);
-            
+
             request.setAttribute("salones", salones);
             request.setAttribute("evaluaciones", evaluaciones);
-            
+
             // Si hay parámetros de filtro, obtener estudiantes con notas
             String salonSeleccionado = request.getParameter("salon");
             String evaluacionSeleccionada = request.getParameter("evaluacion");
-            
-            if (salonSeleccionado != null && !salonSeleccionado.isEmpty() && 
-                evaluacionSeleccionada != null && !evaluacionSeleccionada.isEmpty()) {
-                
+
+            if (salonSeleccionado != null && !salonSeleccionado.isEmpty()
+                    && evaluacionSeleccionada != null && !evaluacionSeleccionada.isEmpty()) {
+
                 int evalId = Integer.parseInt(evaluacionSeleccionada);
                 List<EstudianteNotaDTO> estudiantes = notaDao.obtenerEstudiantesConNotas(salonSeleccionado, evalId);
-                
+
                 request.setAttribute("estudiantes", estudiantes);
                 request.setAttribute("salonSeleccionado", salonSeleccionado);
                 request.setAttribute("evaluacionSeleccionada", evalId);
             }
-            
-            request.getRequestDispatcher("notasDocente.jsp").forward(request, response);
-            
+
+            boolean isAjax = "XMLHttpRequest".equals(request.getHeader("X-Requested-With"));
+
+            if (isAjax) {
+                request.getRequestDispatcher("notasDocente.jsp").forward(request, response);
+            } else {
+                // Redirección tradicional si accede directo
+                response.sendRedirect("docenteDashboard.jsp?page=notasDocente.jsp");
+            }
+
         } catch (SQLException e) {
             throw new ServletException("Error al acceder a la base de datos", e);
         } catch (NumberFormatException e) {
@@ -91,7 +102,7 @@ public class AsignarNotaController extends HttpServlet {
             request.getRequestDispatcher("notasDocente.jsp").forward(request, response);
         }
     }
-    
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
@@ -126,17 +137,35 @@ public class AsignarNotaController extends HttpServlet {
                 }
             }
 
-            // Redirigir con parámetros codificados
-            response.sendRedirect("AsignarNotaController?salon=" + 
-                java.net.URLEncoder.encode(salonSeleccionado, "UTF-8") +
-                "&evaluacion=" + evaluacionId);
+            // Guardar los filtros en sesión
+            session.setAttribute("ultimoSalonFiltrado", salonSeleccionado);
+            session.setAttribute("ultimaEvaluacionFiltrada", evaluacionId);
+
+            // Redirigir manteniendo los filtros
+            String redirectUrl = "AsignarNotaController?salon="
+                    + java.net.URLEncoder.encode(salonSeleccionado, "UTF-8")
+                    + "&evaluacion=" + evaluacionId;
+
+            if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+                response.sendRedirect(redirectUrl);
+            } else {
+                response.sendRedirect(redirectUrl);
+            }
 
         } catch (NumberFormatException e) {
             request.setAttribute("error", "Formato de nota o ID inválido.");
             request.getRequestDispatcher("notasDocente.jsp").forward(request, response);
+            e.printStackTrace();
+            response.setStatus(400);
+            response.setContentType("text/plain");
+            response.getWriter().write("Error de formato en nota o ID.");
         } catch (SQLException e) {
-            throw new ServletException("Error al procesar la nota en la base de datos", e);
+            e.printStackTrace(); // para ver el detalle en consola
+            response.setStatus(500);
+            response.setContentType("text/plain");
+            response.getWriter().write("Error SQL: " + e.getMessage());
         }
+
     }
 
 }

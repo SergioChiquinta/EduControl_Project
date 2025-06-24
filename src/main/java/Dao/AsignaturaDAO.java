@@ -2,7 +2,7 @@
 package Dao;
 
 import Model.Asignatura;
-import Config.clsConnection; 
+import Config.clsConnection;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,11 +12,10 @@ import java.util.List;
 
 public class AsignaturaDAO {
 
-     public List<Asignatura> obtenerAsignaturasPorDocente(int docenteId) {
+    public List<Asignatura> obtenerAsignaturasPorDocente(int docenteId) {
         List<Asignatura> asignaturas = new ArrayList<>();
         String sql = "SELECT id, nombre, docente_id FROM materias WHERE docente_id = ?";
-        try (Connection con = clsConnection.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = clsConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setInt(1, docenteId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -29,12 +28,8 @@ public class AsignaturaDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            // Considera lanzar una excepción personalizada o loguear el error
         }
         return asignaturas;
     }
-     
-    
- }
 
-
+}
