@@ -4,7 +4,7 @@
 <html>
     <head>
         <title>
-            Login - EduControl
+            Login - Prueba
         </title>
         <script src="https://cdn.tailwindcss.com">
         </script>
