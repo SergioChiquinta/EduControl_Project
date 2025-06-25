@@ -4,7 +4,7 @@
 <html>
     <head>
         <title>
-            Login - Prueba
+            Login - Prueba2
         </title>
         <script src="https://cdn.tailwindcss.com">
         </script>
