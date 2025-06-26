@@ -1,0 +1,74 @@
+
+.sidebar {
+    transition: all 0.3s;
+}
+.sidebar-collapsed {
+    width: 90px;
+}
+.sidebar-expanded {
+    width: 250px;
+}
+.main-content {
+    transition: all 0.3s;
+}
+.content-expanded {
+    margin-left: 250px;
+}
+.content-collapsed {
+    margin-left: 90px;
+}
+/* Textos del sidebar siempre visibles en desktop */
+.sidebar-text {
+    display: inline;
+}
+/* Ocultar textos cuando el sidebar está colapsado */
+.sidebar-collapsed .sidebar-text {
+    display: none;
+}
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -250px; /* Oculto inicialmente */
+        top: 64px;
+        width: 250px;
+        height: calc(100vh - 64px);
+        transition: left 0.3s ease;
+        z-index: 40;
+    }
+    .sidebar.active {
+        left: 0; /* Mostrado */
+    }
+    .sidebar-collapsed, .sidebar-expanded {
+        width: 250px; /* Mismo ancho en móvil */
+    }
+    .main-content {
+        margin-left: 0 !important;
+    }
+    #overlay {
+        display: none;
+        position: fixed;
+        top: 0; /* Cambiado de top: 64px a top: 0 para cubrir toda la pantalla */
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 35; /* Mayor que el contenido (30) pero menor que sidebar (40) */
+    }
+    #overlay.active {
+        display: block;
+    }
+    nav {
+        z-index: 45 !important; /* Mayor que overlay pero menor que sidebar */
+    }
+}
+.hidden {
+    display: none !important;
+}
+.sidebar-collapsed .sidebar-link {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
+}
+.sidebar-collapsed .sidebar-link i {
+    margin: 0 auto;
+}

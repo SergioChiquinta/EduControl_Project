@@ -1,0 +1,227 @@
+
+// Elementos del DOM
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebar = document.getElementById('sidebar');
+const mainContent = document.getElementById('mainContent');
+const overlay = document.getElementById('overlay');
+const sidebarTexts = document.querySelectorAll('.sidebar-text');
+
+// Toggle sidebar - Comportamiento unificado
+sidebarToggle.addEventListener('click', () => {
+    if (window.innerWidth <= 768) {
+        // Comportamiento para móviles/tablets
+        const isOpening = !sidebar.classList.contains('active');
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        document.body.style.overflow = isOpening ? 'hidden' : '';
+
+        // Asegurar que el navbar siga siendo clickeable
+        if (isOpening) {
+            document.querySelector('nav').style.zIndex = '45';
+        } else {
+            document.querySelector('nav').style.zIndex = '30';
+        }
+    } else {
+        // Comportamiento para desktop
+        const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
+        sidebar.classList.toggle('sidebar-expanded');
+        mainContent.classList.toggle('content-collapsed');
+        mainContent.classList.toggle('content-expanded');
+    }
+});
+
+// Cerrar sidebar al hacer clic en overlay (solo móviles)
+overlay.addEventListener('click', () => {
+    if (window.innerWidth <= 768) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        document.querySelector('nav').style.zIndex = '30';
+    }
+});
+
+// Manejar cambios de tamaño de pantalla
+window.addEventListener('resize', () => {
+    if (window.innerWidth > 768) {
+        // En desktop: asegurar visibilidad del sidebar y sin overlay
+        sidebar.classList.remove('active');
+        sidebar.style.left = '';
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    } else {
+        // En móvil: asegurar que el sidebar esté oculto inicialmente
+        if (!sidebar.classList.contains('active')) {
+            overlay.classList.remove('active');
+        }
+    }
+});
+
+// Inicialización al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    if (window.innerWidth <= 768) {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+    } else {
+        // Estado inicial para desktop
+        sidebar.classList.add('sidebar-expanded');
+        mainContent.classList.add('content-expanded');
+    }
+
+    // Resto de tu inicialización...
+    loadInitialPage();
+    initEventListeners();
+});
+
+// Dropdown perfil
+const profileDropdown = document.getElementById('profileDropdown');
+const dropdownMenu = document.getElementById('dropdownMenu');
+
+profileDropdown.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdownMenu.classList.toggle('hidden');
+});
+
+document.addEventListener('click', (event) => {
+    if (!profileDropdown.contains(event.target)) {
+        dropdownMenu.classList.add('hidden');
+    }
+});
+
+// Sistema de enrutamiento mejorado
+const routes = {
+    'resumenDocente.jsp': 'resumenDocente.jsp',
+    'asignaturasDocente.jsp': 'asignaturasDocente.jsp',
+    'cursosDocente.jsp': 'cursosDocente.jsp',
+    'notasDocente.jsp': 'notasDocente.jsp',
+    'reportes.jsp': 'reportes.jsp',
+    'configuracion.jsp': 'configuracion.jsp'
+};
+
+// Cargar página con manejo de estado
+async function loadPage(page) {
+    try {
+        const pageToLoad = routes[page] || page;
+
+        // Mostrar loader
+        mainContent.innerHTML = `<div class="flex justify-center items-center h-64">
+                    <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                </div>`;
+
+        const response = await fetch(pageToLoad, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        if (!response.ok)
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+
+        const html = await response.text();
+        mainContent.innerHTML = html;
+
+        // Manejar el historial
+        if (pageToLoad !== window.location.pathname) {
+            window.history.pushState({page}, '', `?page=${page}`);
+        }
+
+        initEventListeners();
+    } catch (error) {
+        console.error('Error:', error);
+        mainContent.innerHTML = `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <strong>Error!</strong> ${error.message}
+                    </div>
+                `;
+    }
+}
+
+// Manejar el evento de popstate (navegación adelante/atrás)
+window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.page) {
+        loadPage(event.state.page);
+    } else {
+        loadPage('resumenDocente.jsp');
+    }
+});
+
+// Inicializar event listeners
+function initEventListeners() {
+    // Sidebar links
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const page = link.getAttribute('data-page');
+            if (page) {
+                loadPage(page);
+            }
+        });
+    });
+
+    // Forms que deben cargarse dentro del mainContent
+    document.querySelectorAll('form[data-ajax]').forEach(form => {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const method = form.method.toUpperCase();
+
+            if (method === 'GET') {
+                const formElements = form.querySelectorAll('input, select, textarea');
+                const params = new URLSearchParams();
+
+                formElements.forEach(el => {
+                    if (el.name && !el.disabled) {
+                        params.append(el.name, el.value);
+                    }
+                });
+
+                const urlWithParams = `${form.action}?${params.toString()}`;
+
+                try {
+                    const response = await fetch(urlWithParams, {
+                        headers: {'X-Requested-With': 'XMLHttpRequest'}
+                    });
+
+                    if (!response.ok)
+                        throw new Error('Error en la solicitud');
+
+                    const result = await response.text();
+                    mainContent.innerHTML = result;
+                    initEventListeners();
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+
+            } else if (method === 'POST') {
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {'X-Requested-With': 'XMLHttpRequest'},
+                        body: formData
+                    });
+
+                    if (!response.ok)
+                        throw new Error('Error en la solicitud');
+
+                    const result = await response.text();
+                    mainContent.innerHTML = result;
+                    initEventListeners();
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        });
+    });
+
+}
+
+// Cargar página inicial basada en la URL o por defecto
+function loadInitialPage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get('page');
+
+    if (pageParam && routes[pageParam]) {
+        loadPage(pageParam);
+    } else {
+        loadPage('resumenDocente.jsp');
+    }
+}
