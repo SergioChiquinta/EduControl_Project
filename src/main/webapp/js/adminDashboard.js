@@ -93,7 +93,7 @@ const routes = {
     'GestionUsuariosController': 'gestion_usuarios.jsp',
     'adminAsignaturas.jsp': 'adminAsignaturas.jsp',
     'adminCursos.jsp': 'adminCursos.jsp',
-    'reportes.jsp': 'reportes.jsp',
+    'reportes.jsp': 'ReporteController',
     'configuracion.jsp': 'configuracion.jsp',
 };
 
@@ -119,6 +119,12 @@ async function loadPage(page) {
         const html = await response.text();
         mainContent.innerHTML = html;
 
+        if (page === 'reportes.jsp') {
+            loadReportesScript(() => {
+                initReportesPage(); // ✅ se llama luego de cargar el script
+            });
+        }
+        
         // Manejar el historial
         if (pageToLoad !== window.location.pathname) {
             window.history.pushState({page}, '', `?page=${page}`);
@@ -140,7 +146,7 @@ window.addEventListener('popstate', (event) => {
     if (event.state && event.state.page) {
         loadPage(event.state.page);
     } else {
-        loadPage('resumenDashboard.jsp');
+        loadPage('resumenAdmin.jsp');
     }
 });
 
@@ -190,6 +196,27 @@ function loadInitialPage() {
     if (pageParam && routes[pageParam]) {
         loadPage(pageParam);
     } else {
-        loadPage('resumenDashboard.jsp');
+        loadPage('resumenAdmin.jsp');
     }
+}
+
+function loadReportesScript(callback) {
+    const oldScript = document.querySelector("script[data-reportes]");
+    if (oldScript)
+        oldScript.remove();
+
+    const script = document.createElement("script");
+    script.src = "js/reportes.js?t=" + new Date().getTime();
+    script.type = "text/javascript";
+    script.setAttribute("data-reportes", "true");
+
+    script.onload = () => {
+        console.log("✅ reportes.js cargado correctamente");
+        if (typeof callback === "function")
+            callback(); // ✅ ejecuta callback tras carga
+    };
+
+    script.onerror = () => console.error("❌ Error al cargar reportes.js");
+
+    document.body.appendChild(script);
 }

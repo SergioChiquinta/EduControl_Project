@@ -91,7 +91,7 @@ document.addEventListener('click', (event) => {
 const routes = {
     'resumenEstudiante.jsp': 'resumenEstudiante.jsp',
     'estudianteNotas.jsp': 'estudianteNotas.jsp',
-    'reportes.jsp': 'reportes.jsp',
+    'reportes.jsp': 'ReporteController',
     'configuracion.jsp': 'configuracion.jsp'
 };
 
@@ -117,6 +117,12 @@ async function loadPage(page) {
         const html = await response.text();
         mainContent.innerHTML = html;
 
+        if (page === 'reportes.jsp') {
+            loadReportesScript(() => {
+                initReportesPage(); // ✅ se llama luego de cargar el script
+            });
+        }
+        
         // Manejar el historial
         if (pageToLoad !== window.location.pathname) {
             window.history.pushState({page}, '', `?page=${page}`);
@@ -190,4 +196,25 @@ function loadInitialPage() {
     } else {
         loadPage('resumenEstudiante.jsp');
     }
+}
+
+function loadReportesScript(callback) {
+    const oldScript = document.querySelector("script[data-reportes]");
+    if (oldScript)
+        oldScript.remove();
+
+    const script = document.createElement("script");
+    script.src = "js/reportes.js?t=" + new Date().getTime();
+    script.type = "text/javascript";
+    script.setAttribute("data-reportes", "true");
+
+    script.onload = () => {
+        console.log("✅ reportes.js cargado correctamente");
+        if (typeof callback === "function")
+            callback(); // ✅ ejecuta callback tras carga
+    };
+
+    script.onerror = () => console.error("❌ Error al cargar reportes.js");
+
+    document.body.appendChild(script);
 }

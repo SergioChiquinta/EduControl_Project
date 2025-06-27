@@ -1,44 +1,26 @@
 
 package Model;
 
+import java.time.LocalDateTime;
+
 public class Reporte {
+
     private int id;
     private int estudianteId;
     private int salonId;
     private int periodoId;
-
-    private String nombreEstudiante; // para mostrar
-    private String nombreSalon;      // opcional para vista
-    private String nombrePeriodo;    // opcional para vista
-
+    private int usuarioId;
     private double promedioGeneral;
     private String estadoAcademico;
+    private LocalDateTime fechaGeneracion;
     private byte[] pdf;
-    private String fechaGeneracion;
 
-    // Constructor
+    // Atributos extras
+    private String nombreEstudiante;
+    private String nombreSalon;
+    private String nombrePeriodo;
 
-    public Reporte(int id, int estudianteId, int salonId, int periodoId, String nombreEstudiante, String nombreSalon, String nombrePeriodo, double promedioGeneral, String estadoAcademico, byte[] pdf, String fechaGeneracion) {
-        this.id = id;
-        this.estudianteId = estudianteId;
-        this.salonId = salonId;
-        this.periodoId = periodoId;
-        this.nombreEstudiante = nombreEstudiante;
-        this.nombreSalon = nombreSalon;
-        this.nombrePeriodo = nombrePeriodo;
-        this.promedioGeneral = promedioGeneral;
-        this.estadoAcademico = estadoAcademico;
-        this.pdf = pdf;
-        this.fechaGeneracion = fechaGeneracion;
-    }
-
-    // Constructor vacío necesario para poder usar new Reporte()
-    public Reporte() {
-        
-    }
-    
     // Getters y Setters
-
     public int getId() {
         return id;
     }
@@ -71,6 +53,46 @@ public class Reporte {
         this.periodoId = periodoId;
     }
 
+    public int getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public double getPromedioGeneral() {
+        return promedioGeneral;
+    }
+
+    public void setPromedioGeneral(double promedioGeneral) {
+        this.promedioGeneral = promedioGeneral;
+    }
+
+    public String getEstadoAcademico() {
+        return estadoAcademico;
+    }
+
+    public void setEstadoAcademico(String estadoAcademico) {
+        this.estadoAcademico = estadoAcademico;
+    }
+
+    public LocalDateTime getFechaGeneracion() {
+        return fechaGeneracion;
+    }
+
+    public void setFechaGeneracion(LocalDateTime fechaGeneracion) {
+        this.fechaGeneracion = fechaGeneracion;
+    }
+
+    public byte[] getPdf() {
+        return pdf;
+    }
+
+    public void setPdf(byte[] pdf) {
+        this.pdf = pdf;
+    }
+
     public String getNombreEstudiante() {
         return nombreEstudiante;
     }
@@ -95,36 +117,4 @@ public class Reporte {
         this.nombrePeriodo = nombrePeriodo;
     }
 
-    public double getPromedioGeneral() {
-        return promedioGeneral;
-    }
-
-    public void setPromedioGeneral(double promedioGeneral) {
-        this.promedioGeneral = promedioGeneral;
-    }
-
-    public String getEstadoAcademico() {
-        return estadoAcademico;
-    }
-
-    public void setEstadoAcademico(String estadoAcademico) {
-        this.estadoAcademico = estadoAcademico;
-    }
-
-    public byte[] getPdf() {
-        return pdf;
-    }
-
-    public void setPdf(byte[] pdf) {
-        this.pdf = pdf;
-    }
-
-    public String getFechaGeneracion() {
-        return fechaGeneracion;
-    }
-
-    public void setFechaGeneracion(String fechaGeneracion) {
-        this.fechaGeneracion = fechaGeneracion;
-    }
-    
 }
