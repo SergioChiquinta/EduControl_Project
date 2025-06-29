@@ -78,7 +78,7 @@ public class AsignarNotaController extends HttpServlet {
 
             String evaluacionSeleccionada = request.getParameter("evaluacion");
 
-// Solo dividir si NO es nulo y no vacío
+            // Solo dividir si NO es nulo y no vacío
             if (salonSeleccionado != null && !salonSeleccionado.isEmpty()
                     && evaluacionSeleccionada != null && !evaluacionSeleccionada.isEmpty()) {
 

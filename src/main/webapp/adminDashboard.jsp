@@ -113,7 +113,6 @@
         </div>
 
         <script src="js/adminDashboard.js"></script>
-        <script src="js/gestion_usuarios.js"></script>
         <script src="js/configuracion.js"></script>
         <script src="js/gestionUsuariosAdmin.js?t=${System.currentTimeMillis()}"></script>
         <script src="js/adminAsignaturas.js"></script>

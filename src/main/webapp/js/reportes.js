@@ -59,32 +59,51 @@ function initReportesPage() {
         formGenerar.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const formData = new FormData(formGenerar);
-            formData.append("accion", "generar");
-
-            const response = await fetch("ReporteController", {
-                method: "POST",
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest' // para distinguir solicitudes AJAX
-                },
-                body: formData
-            });
-
-            if (!response.ok) {
-                alert("❌ Error al generar el reporte.");
-                return;
+            // 🔥 Selecciona el botón de submit dentro del formulario
+            const submitBtn = formGenerar.querySelector("button[type='submit']");
+            if (submitBtn) {
+                // Deshabilitar el botón
+                submitBtn.disabled = true;
+                // Cambiar texto (opcional: podrías agregar spinner si quieres)
+                submitBtn.innerHTML = "Generando...";
             }
 
-            const html = await response.text();
+            try {
+                const formData = new FormData(formGenerar);
+                formData.append("accion", "generar");
 
-            // Cargar solo la parte de reportes en el contenedor dinámico
-            const mainContent = document.getElementById("mainContent");
-            if (mainContent) {
-                mainContent.innerHTML = html;
+                const response = await fetch("ReporteController", {
+                    method: "POST",
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    alert("❌ Error al generar el reporte.");
+                    return;
+                }
+
+                const html = await response.text();
+
+                const mainContent = document.getElementById("mainContent");
+                if (mainContent) {
+                    mainContent.innerHTML = html;
+                }
+
+                // Vuelve a inicializar scripts en el nuevo contenido
+                initReportesPage();
+            } catch (error) {
+                console.error(error);
+                alert("❌ Error inesperado.");
+            } finally {
+                // Habilitar el botón nuevamente y restaurar texto
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = "Generar Reporte";
+                }
             }
-
-            // Vuelve a ejecutar los scripts y listeners
-            initReportesPage();
         });
     }
 
