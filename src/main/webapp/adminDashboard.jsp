@@ -113,6 +113,7 @@
 
         <script src="js/adminDashboard.js"></script>
         <script src="js/gestion_usuarios.js"></script>
+        <script src="js/configuracion.js"></script>
         <!-- Bootstrap JS Bundle (incluye Popper) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

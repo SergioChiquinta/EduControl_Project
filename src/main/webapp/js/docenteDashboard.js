@@ -124,6 +124,12 @@ async function loadPage(page) {
                 initReportesPage(); // ✅ se llama luego de cargar el script
             });
         }
+        
+        else if (page === 'configuracion.jsp') {
+            loadConfiguracionScript(() => {
+                initConfiguracionPage();
+            });
+        }
 
         // Manejar el historial
         if (pageToLoad !== window.location.pathname) {
@@ -250,5 +256,21 @@ function loadReportesScript(callback) {
 
     script.onerror = () => console.error("❌ Error al cargar reportes.js");
 
+    document.body.appendChild(script);
+}
+
+function loadConfiguracionScript(callback) {
+    if (window.configuracionScriptLoaded) {
+        callback();
+        return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "js/configuracion.js?t=" + new Date().getTime();
+    script.defer = true;
+    script.onload = () => {
+        window.configuracionScriptLoaded = true;
+        callback();
+    };
     document.body.appendChild(script);
 }
