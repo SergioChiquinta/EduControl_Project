@@ -1,9 +1,6 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<link rel="stylesheet" href="css/adminAsignaturas.css">
-
 <div class="p-6 bg-white shadow rounded-lg">
     <div class="flex items-center justify-between mb-4">
         <h1 class="text-2xl font-bold text-gray-800">Gestión de Asignaturas</h1>

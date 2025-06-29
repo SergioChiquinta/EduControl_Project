@@ -12,6 +12,9 @@ public class Curso {
     private String nombrePeriodo;
     private int estudiantesInscritos;
 
+    // Variable de apoyo - Funcionalidad Cursos Admin
+    private String docenteNombre;
+    
     public Curso() {
     }
 
@@ -90,4 +93,13 @@ public class Curso {
     public void setEstudiantesInscritos(int estudiantesInscritos) {
         this.estudiantesInscritos = estudiantesInscritos;
     }
+
+    public String getDocenteNombre() {
+        return docenteNombre;
+    }
+
+    public void setDocenteNombre(String docenteNombre) {
+        this.docenteNombre = docenteNombre;
+    }
+    
 }

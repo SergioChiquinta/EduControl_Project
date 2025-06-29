@@ -92,7 +92,7 @@ const routes = {
     'resumenAdmin.jsp': 'resumenAdmin.jsp',
     'GestionUsuariosController': 'GestionUsuariosController',
     'AsignaturasAdminController': 'AsignaturasAdminController',
-    'adminCursos.jsp': 'adminCursos.jsp',
+    'CursosAdminController': 'CursosAdminController',
     'reportes.jsp': 'ReporteController',
     'configuracion.jsp': 'ConfiguracionController'
 };
@@ -140,6 +140,12 @@ async function loadPage(page) {
         else if (page === 'AsignaturasAdminController') {
             loadAsignaturasScript(() => {
                 initAsignaturasPage();
+            });
+        }
+        
+        else if (page === 'CursosAdminController') {
+            loadCursosScript(() => {
+                initCursosPage();
             });
         }
         
@@ -282,6 +288,22 @@ function loadAsignaturasScript(callback) {
     script.defer = true;
     script.onload = () => {
         window.asignaturasScriptLoaded = true;
+        callback();
+    };
+    document.body.appendChild(script);
+}
+
+function loadCursosScript(callback) {
+    if (window.cursosScriptLoaded) {
+        callback();
+        return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "js/adminCursos.js?t=" + new Date().getTime();
+    script.defer = true;
+    script.onload = () => {
+        window.cursosScriptLoaded = true;
         callback();
     };
     document.body.appendChild(script);
