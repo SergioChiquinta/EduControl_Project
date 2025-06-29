@@ -34,6 +34,7 @@
         <!-- Bootstrap 5 (desde CDN) -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="css/estilos_generales.css">
+        <link rel="stylesheet" href="css/gestionUsuariosAdmin.css">
     </head>
     <body class="bg-gray-100 flex flex-col min-h-screen">
         <!-- Navbar -->
@@ -114,6 +115,7 @@
         <script src="js/adminDashboard.js"></script>
         <script src="js/gestion_usuarios.js"></script>
         <script src="js/configuracion.js"></script>
+        <script src="js/gestionUsuariosAdmin.js?t=${System.currentTimeMillis()}"></script>
         <!-- Bootstrap JS Bundle (incluye Popper) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

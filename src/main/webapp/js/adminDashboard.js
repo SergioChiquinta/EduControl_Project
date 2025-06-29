@@ -90,7 +90,7 @@ document.addEventListener('click', (event) => {
 // Sistema de enrutamiento mejorado
 const routes = {
     'resumenAdmin.jsp': 'resumenAdmin.jsp',
-    'GestionUsuariosController': 'gestion_usuarios.jsp',
+    'GestionUsuariosController': 'GestionUsuariosController',
     'adminAsignaturas.jsp': 'adminAsignaturas.jsp',
     'adminCursos.jsp': 'adminCursos.jsp',
     'reportes.jsp': 'ReporteController',
@@ -128,6 +128,12 @@ async function loadPage(page) {
         else if (page === 'configuracion.jsp') {
             loadConfiguracionScript(() => {
                 initConfiguracionPage();
+            });
+        }
+        
+        else if (page === 'GestionUsuariosController') {
+            loadGestionUsuariosScript(() => {
+                initGestionUsuariosPage();
             });
         }
         
@@ -238,6 +244,22 @@ function loadConfiguracionScript(callback) {
     script.defer = true;
     script.onload = () => {
         window.configuracionScriptLoaded = true;
+        callback();
+    };
+    document.body.appendChild(script);
+}
+
+function loadGestionUsuariosScript(callback) {
+    if (window.gestionUsuariosScriptLoaded) {
+        callback();
+        return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "js/gestionUsuariosAdmin.js?t=" + new Date().getTime();
+    script.defer = true;
+    script.onload = () => {
+        window.gestionUsuariosScriptLoaded = true;
         callback();
     };
     document.body.appendChild(script);

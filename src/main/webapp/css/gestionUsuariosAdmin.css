@@ -1,0 +1,5 @@
+
+.btn-accion {
+    margin: 4px; /* Espacio mínimo en todos los lados */
+    display: inline-block; /* Asegura separación en móviles */
+}

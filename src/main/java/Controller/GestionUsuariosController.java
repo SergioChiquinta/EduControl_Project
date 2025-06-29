@@ -1,151 +1,108 @@
 
 package Controller;
 
-import Dao.UsuarioDAO;
+import Dao.GestionUsuarioDAO;
 import Model.Usuario;
-
-import jakarta.servlet.ServletException;
+import jakarta.servlet.*;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-
 import java.io.IOException;
 import java.util.List;
 
+@MultipartConfig
 @WebServlet("/GestionUsuariosController")
 public class GestionUsuariosController extends HttpServlet {
 
-    private UsuarioDAO usuarioDAO;
+    private GestionUsuarioDAO dao = new GestionUsuarioDAO();
 
     @Override
-    public void init() {
-        usuarioDAO = new UsuarioDAO();
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String filtroCampo = req.getParameter("campo");
+        String filtroValor = req.getParameter("valor");
+
+        List<Usuario> usuarios;
+
+        // ✅ Si no hay filtro, siempre traer todos los usuarios
+        if (filtroCampo == null || filtroValor == null || filtroCampo.isEmpty() || filtroValor.isEmpty()) {
+            usuarios = dao.obtenerTodosUsuarios();
+        } else {
+            usuarios = dao.filtrarUsuarios(filtroCampo, filtroValor);
+        }
+
+        req.setAttribute("listaUsuarios", usuarios);
+        req.setAttribute("listaSalones", dao.obtenerSalones());
+
+        // ✅ Para AJAX, devolvemos solo fragmento si es necesario
+        String isAjax = req.getHeader("X-Requested-With");
+        if ("XMLHttpRequest".equals(isAjax)) {
+            RequestDispatcher dispatcher = req.getRequestDispatcher("gestionUsuariosAdmin.jsp");
+            dispatcher.forward(req, resp);
+        } else {
+            // Si no es AJAX, recargar igual
+            RequestDispatcher dispatcher = req.getRequestDispatcher("gestionUsuariosAdmin.jsp");
+            dispatcher.forward(req, resp);
+        }
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String accion = req.getParameter("accion");
 
-        HttpSession session = request.getSession();
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        if ("crear".equals(accion)) {
+            String nombre = req.getParameter("nombre");
+            String correo = req.getParameter("correo");
+            String contrasena = req.getParameter("contrasena");
+            String rol = req.getParameter("rol");
+            String salonIdStr = req.getParameter("salonId");
 
-        // Verificar autenticación y rol de administrador
-        if (usuario == null || !"administrador".equals(usuario.getRol())) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
+            // ✅ Validar correo simple
+            if (!correo.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+                req.setAttribute("mensaje", "Formato de correo inválido.");
+                doGet(req, resp);
+                return;
+            }
 
-        String action = request.getParameter("action");
-        String filtro = request.getParameter("filtro");
-        String valor = request.getParameter("valor");
+            boolean creado = dao.crearUsuario(nombre, correo, contrasena, rol, salonIdStr);
 
-        if ("Todos".equals(filtro)) {
-            filtro = null;
-            valor = null;
-        }
-
-        try {
-            if ("nuevo".equals(action)) {
-                // Solo indica que se debe abrir el modal de "nuevo"
-                request.setAttribute("mostrarModalNuevo", true);
-                List<Usuario> usuarios = usuarioDAO.listarTodos(); // Para seguir mostrando la tabla
-                request.setAttribute("usuarios", usuarios);
-                request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
-
-            } else if ("editar".equals(action)) {
-                int id = Integer.parseInt(request.getParameter("id"));
-                Usuario u = usuarioDAO.obtenerUsuario(id);
-                request.setAttribute("usuarioEditar", u);
-                request.setAttribute("mostrarModalEditar", true);
-                List<Usuario> usuarios = usuarioDAO.listarTodos();
-                request.setAttribute("usuarios", usuarios);
-                request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
-
+            if (creado) {
+                req.setAttribute("mensaje", "Usuario creado exitosamente.");
             } else {
-                if (filtro == null || filtro.isEmpty()) {
-                    List<Usuario> usuarios = usuarioDAO.listarTodos();
-                    request.setAttribute("usuarios", usuarios);
-                    request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
-                } else {
-                    List<Usuario> usuarios = usuarioDAO.listarUsuariosFiltrado(filtro, valor != null ? valor : "");
-                    request.setAttribute("usuarios", usuarios);
-                    request.setAttribute("filtro", filtro);
-                    request.setAttribute("valor", valor);
-                    request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
-                }
+                req.setAttribute("mensaje", "Error al crear el usuario. Verifica los datos.");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Error al procesar la solicitud");
-            request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
-        }
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
-        HttpSession session = request.getSession();
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-        // Verificar autenticación y rol de administrador
-        if (usuario == null || !"administrador".equals(usuario.getRol())) {
-            response.sendRedirect("login.jsp");
-            return;
         }
 
-        String action = request.getParameter("action");
+        if ("editar".equals(accion)) {
+            int id = Integer.parseInt(req.getParameter("id"));
+            String nombre = req.getParameter("nombre");
+            String correo = req.getParameter("correo");
 
-        try {
-            if ("crear".equals(action)) {
-                Usuario nuevo = new Usuario();
-                nuevo.setUsername(request.getParameter("nombre"));
-                nuevo.setCorreo(request.getParameter("correo"));
-                nuevo.setRol(request.getParameter("rol"));
-                String password = request.getParameter("password");
-
-                if (usuarioDAO.existeCorreo(nuevo.getCorreo())) {
-                    request.setAttribute("error", "El correo ya está registrado");
-                    request.setAttribute("usuario", nuevo);
-                    request.getRequestDispatcher("nuevoUsuario.jsp").forward(request, response);
-                    return;
-                }
-
-                if (usuarioDAO.crearUsuario(nuevo, password)) {
-                    request.setAttribute("exito", "Usuario creado exitosamente");
-                } else {
-                    request.setAttribute("error", "Error al crear usuario");
-                }
-
-            } else if ("actualizar".equals(action)) {
-                Usuario actualizado = new Usuario();
-                actualizado.setId(Integer.parseInt(request.getParameter("id")));
-                actualizado.setUsername(request.getParameter("nombre"));
-                actualizado.setCorreo(request.getParameter("correo"));
-                actualizado.setRol(request.getParameter("rol"));
-
-                if (usuarioDAO.actualizarUsuario(actualizado)) {
-                    request.setAttribute("exito", "Usuario actualizado exitosamente");
-                } else {
-                    request.setAttribute("error", "Error al actualizar usuario");
-                }
-
-            } else if ("eliminar".equals(action)) {
-                int id = Integer.parseInt(request.getParameter("id"));
-
-                if (usuarioDAO.eliminarUsuario(id)) {
-                    request.setAttribute("exito", "Usuario eliminado exitosamente");
-                } else {
-                    request.setAttribute("error", "Error al eliminar usuario");
-                }
+            if (!correo.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+                req.setAttribute("mensaje", "Formato de correo inválido.");
+                doGet(req, resp);
+                return;
             }
 
-            // Redirigir a la lista de usuarios
-            request.getRequestDispatcher("GestionUsuariosController").forward(request, response);
+            boolean actualizado = dao.editarUsuario(id, nombre, correo);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            request.setAttribute("error", "Error al procesar la solicitud");
-            request.getRequestDispatcher("gestion_usuarios.jsp").forward(request, response);
+            if (actualizado) {
+                req.setAttribute("mensaje", "Usuario actualizado exitosamente.");
+            } else {
+                req.setAttribute("mensaje", "Error al actualizar usuario.");
+            }
         }
+
+        if ("eliminar".equals(accion)) {
+            int id = Integer.parseInt(req.getParameter("id"));
+            boolean eliminado = dao.eliminarUsuario(id);
+
+            if (eliminado) {
+                req.setAttribute("mensaje", "Usuario eliminado correctamente.");
+            } else {
+                req.setAttribute("mensaje", "Error al eliminar usuario.");
+            }
+        }
+
+        doGet(req, resp);
     }
 }
