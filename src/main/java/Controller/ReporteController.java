@@ -74,18 +74,20 @@ public class ReporteController extends HttpServlet {
                 return;
             }
             session.setAttribute("generandoReporte", true); // ⚠️ Bloqueo temporal
+
             try {
                 int estudianteId = Integer.parseInt(req.getParameter("estudianteId"));
                 int salonId = Integer.parseInt(req.getParameter("salonId"));
                 int periodoId = Integer.parseInt(req.getParameter("periodoId"));
+
                 Model.Usuario usuario = (Model.Usuario) req.getSession().getAttribute("usuario");
                 if (usuario == null) {
                     resp.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Sesión expirada");
                     return;
                 }
-                int usuarioId = usuario.getId(); // Ahora sí tienes el ID del usuario autenticado
+                int usuarioId = usuario.getId();
 
-                // Aquí iría la lógica para calcular promedio y estado
+                // Calcular promedio general
                 double promedio = datosDAO.calcularPromedioEstudiante(estudianteId, periodoId);
                 String estado = promedio >= 11 ? "Aprobado" : "Desaprobado";
 
@@ -103,7 +105,7 @@ public class ReporteController extends HttpServlet {
                 r.setSalonId(salonId);
                 r.setPeriodoId(periodoId);
                 r.setUsuarioId(usuarioId);
-                r.setPromedioGeneral(promedio);
+                r.setPromedioGeneral(promedioGeneral);
                 r.setEstadoAcademico(estado);
                 r.setPdf(pdf);
 
@@ -128,4 +130,5 @@ public class ReporteController extends HttpServlet {
 
         }
     }
+
 }

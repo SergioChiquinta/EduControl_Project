@@ -14,6 +14,7 @@ public class Curso {
 
     // Variable de apoyo - Funcionalidad Cursos Admin
     private String docenteNombre;
+    private boolean activo;
     
     public Curso() {
     }
@@ -100,6 +101,14 @@ public class Curso {
 
     public void setDocenteNombre(String docenteNombre) {
         this.docenteNombre = docenteNombre;
+    }
+
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
     }
     
 }

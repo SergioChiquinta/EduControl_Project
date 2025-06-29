@@ -6,6 +6,7 @@ public class EstudianteNotaDTO {
     private int estudianteId;
     private String nombreEstudiante;
     private Double nota;
+    private String nombrePeriodo;
 
     // Getters y Setters
     public int getEstudianteId() {
@@ -31,4 +32,13 @@ public class EstudianteNotaDTO {
     public void setNota(Double nota) {
         this.nota = nota;
     }
+
+    public String getNombrePeriodo() {
+        return nombrePeriodo;
+    }
+
+    public void setNombrePeriodo(String nombrePeriodo) {
+        this.nombrePeriodo = nombrePeriodo;
+    }
+    
 }

@@ -2,15 +2,14 @@
 package Model;
 
 public class Evaluacion {
-
     private int id;
     private String nombre;
     private double peso;
-    private int materiaId;
-    private int periodoId;
+    private int cursoId;
     private int tipoId;
 
     // Getters y Setters
+
     public int getId() {
         return id;
     }
@@ -35,20 +34,12 @@ public class Evaluacion {
         this.peso = peso;
     }
 
-    public int getMateriaId() {
-        return materiaId;
+    public int getCursoId() {
+        return cursoId;
     }
 
-    public void setMateriaId(int materiaId) {
-        this.materiaId = materiaId;
-    }
-
-    public int getPeriodoId() {
-        return periodoId;
-    }
-
-    public void setPeriodoId(int periodoId) {
-        this.periodoId = periodoId;
+    public void setCursoId(int cursoId) {
+        this.cursoId = cursoId;
     }
 
     public int getTipoId() {
@@ -58,4 +49,5 @@ public class Evaluacion {
     public void setTipoId(int tipoId) {
         this.tipoId = tipoId;
     }
+    
 }

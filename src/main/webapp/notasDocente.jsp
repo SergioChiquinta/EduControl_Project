@@ -38,7 +38,7 @@
     <div class="bg-white p-6 rounded-lg shadow-md mb-6">
         <form method="GET" action="AsignarNotaController" class="flex flex-wrap gap-4" data-ajax>
             <div class="w-full md:w-1/3">
-                <label for="salon" class="block text-sm font-medium text-gray-700 mb-1">Salón:</label>
+                <label for="salon" class="block text-sm font-medium text-gray-700 mb-1">Salón y periodo:</label>
                 <select id="salon" name="salon" class="w-full p-2 border rounded" required>
                     <option value="">Seleccione un salón</option>
                     <% if (salones != null) { 

@@ -62,15 +62,15 @@ public class DatosAcademicosDAO {
     public double calcularPromedioEstudiante(int estudianteId, int periodoId) {
         String sql = "SELECT AVG(promedio_materia) AS promedio_general "
                 + "FROM ( "
-                + "    SELECT  "
+                + "    SELECT "
                 + "        SUM(IFNULL(n.nota, 0) * e.peso) / SUM(e.peso) AS promedio_materia "
                 + "    FROM cursos c "
-                + "    JOIN evaluaciones e ON c.materia_id = e.materia_id AND c.periodo_id = e.periodo_id "
+                + "    JOIN evaluaciones e ON e.curso_id = c.id "
                 + "    LEFT JOIN notas n ON n.evaluacion_id = e.id AND n.estudiante_id = ? "
                 + "    WHERE c.periodo_id = ? "
                 + "      AND c.salon_id = (SELECT salon_id FROM estudiantes WHERE id = ?) "
                 + "    GROUP BY c.materia_id "
-                + ") AS promedios_por_materia;";
+                + ") AS promedios_por_materia";
 
         try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, estudianteId);
@@ -115,20 +115,22 @@ public class DatosAcademicosDAO {
     public Map<String, Double> calcularPromediosPorMateria(int estudianteId, int periodoId) {
         Map<String, Double> promedios = new LinkedHashMap<>();
 
-        String sql = "SELECT " +
-             "    m.nombre AS materia_nombre, " +
-             "    SUM(COALESCE(n.nota, 0) * e.peso) / SUM(e.peso) AS promedio " +
-             "FROM evaluaciones e " +
-             "JOIN materias m ON e.materia_id = m.id " +
-             "LEFT JOIN notas n ON n.evaluacion_id = e.id AND n.estudiante_id = ? " +
-             "WHERE e.periodo_id = ? " +
-             "GROUP BY m.id, m.nombre " +
-             "ORDER BY m.nombre";
+        String sql = "SELECT "
+                + "    m.nombre AS materia_nombre, "
+                + "    SUM(COALESCE(n.nota, 0) * e.peso) / SUM(e.peso) AS promedio "
+                + "FROM cursos c "
+                + "JOIN materias m ON c.materia_id = m.id "
+                + "JOIN evaluaciones e ON e.curso_id = c.id "
+                + "LEFT JOIN notas n ON n.evaluacion_id = e.id AND n.estudiante_id = ? "
+                + "WHERE c.periodo_id = ? "
+                + "  AND c.salon_id = (SELECT salon_id FROM estudiantes WHERE id = ?) "
+                + "GROUP BY m.id, m.nombre "
+                + "ORDER BY m.nombre";
 
         try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setInt(1, estudianteId);
             ps.setInt(2, periodoId);
+            ps.setInt(3, estudianteId);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

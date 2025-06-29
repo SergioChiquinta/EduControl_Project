@@ -73,13 +73,32 @@ public class AsignarNotaController extends HttpServlet {
 
             // Si hay parámetros de filtro, obtener estudiantes con notas
             String salonSeleccionado = request.getParameter("salon");
+            String nombreSalon = null;
+            String nombrePeriodo = null;
+
             String evaluacionSeleccionada = request.getParameter("evaluacion");
+
+// Solo dividir si NO es nulo y no vacío
+            if (salonSeleccionado != null && !salonSeleccionado.isEmpty()
+                    && evaluacionSeleccionada != null && !evaluacionSeleccionada.isEmpty()) {
+
+                String[] partes = salonSeleccionado.split(" - ");
+                nombreSalon = partes[0];
+                nombrePeriodo = partes.length > 1 ? partes[1] : "";
+
+                int evalId = Integer.parseInt(evaluacionSeleccionada);
+                List<EstudianteNotaDTO> estudiantes = notaDao.obtenerEstudiantesConNotas(nombreSalon, nombrePeriodo, evalId);
+
+                request.setAttribute("estudiantes", estudiantes);
+                request.setAttribute("salonSeleccionado", salonSeleccionado);
+                request.setAttribute("evaluacionSeleccionada", evalId);
+            }
 
             if (salonSeleccionado != null && !salonSeleccionado.isEmpty()
                     && evaluacionSeleccionada != null && !evaluacionSeleccionada.isEmpty()) {
 
                 int evalId = Integer.parseInt(evaluacionSeleccionada);
-                List<EstudianteNotaDTO> estudiantes = notaDao.obtenerEstudiantesConNotas(salonSeleccionado, evalId);
+                List<EstudianteNotaDTO> estudiantes = notaDao.obtenerEstudiantesConNotas(nombreSalon, nombrePeriodo, evalId);
 
                 request.setAttribute("estudiantes", estudiantes);
                 request.setAttribute("salonSeleccionado", salonSeleccionado);
