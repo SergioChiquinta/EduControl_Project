@@ -91,7 +91,7 @@ document.addEventListener('click', (event) => {
 const routes = {
     'resumenAdmin.jsp': 'resumenAdmin.jsp',
     'GestionUsuariosController': 'GestionUsuariosController',
-    'adminAsignaturas.jsp': 'adminAsignaturas.jsp',
+    'AsignaturasAdminController': 'AsignaturasAdminController',
     'adminCursos.jsp': 'adminCursos.jsp',
     'reportes.jsp': 'ReporteController',
     'configuracion.jsp': 'ConfiguracionController'
@@ -134,6 +134,12 @@ async function loadPage(page) {
         else if (page === 'GestionUsuariosController') {
             loadGestionUsuariosScript(() => {
                 initGestionUsuariosPage();
+            });
+        }
+        
+        else if (page === 'AsignaturasAdminController') {
+            loadAsignaturasScript(() => {
+                initAsignaturasPage();
             });
         }
         
@@ -260,6 +266,22 @@ function loadGestionUsuariosScript(callback) {
     script.defer = true;
     script.onload = () => {
         window.gestionUsuariosScriptLoaded = true;
+        callback();
+    };
+    document.body.appendChild(script);
+}
+
+function loadAsignaturasScript(callback) {
+    if (window.asignaturasScriptLoaded) {
+        callback();
+        return;
+    }
+
+    const script = document.createElement("script");
+    script.src = "js/adminAsignaturas.js?t=" + new Date().getTime();
+    script.defer = true;
+    script.onload = () => {
+        window.asignaturasScriptLoaded = true;
         callback();
     };
     document.body.appendChild(script);

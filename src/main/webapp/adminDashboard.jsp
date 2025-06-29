@@ -78,7 +78,7 @@
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" data-page="adminAsignaturas.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                        <a href="#" data-page="AsignaturasAdminController" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                             <i class="fas fa-book text-center w-6"></i>
                             <span class="sidebar-text ml-3">Asignaturas</span>
                         </a>
@@ -116,6 +116,7 @@
         <script src="js/gestion_usuarios.js"></script>
         <script src="js/configuracion.js"></script>
         <script src="js/gestionUsuariosAdmin.js?t=${System.currentTimeMillis()}"></script>
+        <script src="js/adminAsignaturas.js"></script>
         <!-- Bootstrap JS Bundle (incluye Popper) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 

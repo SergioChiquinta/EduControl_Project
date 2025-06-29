@@ -5,7 +5,10 @@ public class Asignatura {
 
     private int id;
     private String nombre;
-    private int docenteId; //no se muestra en la vista pero por siacaso lo pongo
+    private int docenteId;
+    
+    // Variable de apoyo - Funcionalidad Asignatura Admin
+    private String docenteNombre;
 
     public Asignatura() {
     }
@@ -40,4 +43,13 @@ public class Asignatura {
     public void setDocenteId(int docenteId) {
         this.docenteId = docenteId;
     }
+
+    public String getDocenteNombre() {
+        return docenteNombre;
+    }
+
+    public void setDocenteNombre(String docenteNombre) {
+        this.docenteNombre = docenteNombre;
+    }
+    
 }
