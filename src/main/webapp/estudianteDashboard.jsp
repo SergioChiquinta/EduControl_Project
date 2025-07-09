@@ -55,7 +55,7 @@
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" data-page="estudianteNotas.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                        <a href="#" data-page="EstudianteNotasController" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                             <i class="fas fa-users text-center w-6"></i>
                             <span class="sidebar-text ml-3">Mis Notas</span>
                         </a>
@@ -84,6 +84,7 @@
         </div>
 
         <script src="js/estudianteDashboard.js"></script>
+        <script src="js/estudianteNotas.js"></script>
         <!-- Bootstrap JS Bundle (incluye Popper) -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -97,4 +98,25 @@
             defaultLink.click();
         }
     });
+</script>
+
+<script>
+    window.addEventListener('mouseover', initLandbot, {once: true});
+    window.addEventListener('touchstart', initLandbot, {once: true});
+    var myLandbot;
+    function initLandbot() {
+        if (!myLandbot) {
+            var s = document.createElement('script');
+            s.type = "module"
+            s.async = true;
+            s.addEventListener('load', function () {
+                var myLandbot = new Landbot.Livechat({
+                    configUrl: 'https://storage.googleapis.com/landbot.online/v3/H-3037486-N0Y11QE0VKQW4VM7/index.json',
+                });
+            });
+            s.src = 'https://cdn.landbot.io/landbot-3/landbot-3.0.0.mjs';
+            var x = document.getElementsByTagName('script')[0];
+            x.parentNode.insertBefore(s, x);
+        }
+    }
 </script>

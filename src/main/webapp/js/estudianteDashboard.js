@@ -90,7 +90,7 @@ document.addEventListener('click', (event) => {
 // Sistema de enrutamiento mejorado
 const routes = {
     'ResumenEstudianteController': 'ResumenEstudianteController',
-    'estudianteNotas.jsp': 'estudianteNotas.jsp',
+    'EstudianteNotasController': 'EstudianteNotasController',
     'reportes.jsp': 'ReporteController',
     'configuracion.jsp': 'configuracion.jsp'
 };
