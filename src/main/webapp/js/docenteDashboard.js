@@ -89,7 +89,7 @@ document.addEventListener('click', (event) => {
 
 // Sistema de enrutamiento mejorado
 const routes = {
-    'resumenDocente.jsp': 'resumenDocente.jsp',
+    'ResumenDocenteController': 'ResumenDocenteController',
     'asignaturasDocente.jsp': 'asignaturasDocente.jsp',
     'cursosDocente.jsp': 'cursosDocente.jsp',
     'notasDocente.jsp': 'notasDocente.jsp',
@@ -152,7 +152,7 @@ window.addEventListener('popstate', (event) => {
     if (event.state && event.state.page) {
         loadPage(event.state.page);
     } else {
-        loadPage('resumenDocente.jsp');
+        loadPage('ResumenDocenteController');
     }
 });
 

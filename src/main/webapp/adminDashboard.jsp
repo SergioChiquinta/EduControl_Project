@@ -7,21 +7,6 @@
         response.sendRedirect("login.jsp");
         return;
     }
-
-    String mensaje = (String) session.getAttribute("mensaje_bienvenida");
-    
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    System.out.println("Usuario en sesión: " + usuario);
-    if (usuario == null) {
-        System.out.println("No hay usuario en sesión");
-        response.sendRedirect("login.jsp");
-        return;
-    }
-    if (!"administrador".equals(usuario.getRol())) {
-        System.out.println("Rol incorrecto: " + usuario.getRol());
-        response.sendRedirect("login.jsp");
-        return;
-    }
 %>
 <!DOCTYPE html>
 <html lang="es">
@@ -66,7 +51,7 @@
             <div class="p-4">
                 <ul>
                     <li class="mb-2">
-                        <a href="#" data-page="resumenAdmin.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                        <a href="#" data-page="ResumenAdminController" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                             <i class="fas fa-tachometer-alt text-center w-6"></i>
                             <span class="sidebar-text ml-3">Dashboard</span>
                         </a>
@@ -113,6 +98,7 @@
         </div>
 
         <script src="js/adminDashboard.js"></script>
+        <script src="js/resumenAdmin.js"></script>
         <script src="js/configuracion.js"></script>
         <script src="js/gestionUsuariosAdmin.js?t=${System.currentTimeMillis()}"></script>
         <script src="js/adminAsignaturas.js"></script>
@@ -122,3 +108,12 @@
 
     </body>
 </html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const defaultLink = document.querySelector('a.sidebar-link[data-page="ResumenAdminController"]');
+        if (defaultLink) {
+            defaultLink.click();
+        }
+    });
+</script>

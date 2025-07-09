@@ -1,9 +1,6 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-
-<link rel="stylesheet" href="css/gestionUsuariosAdmin.css">
-
 <div class="container mx-auto p-6 bg-white shadow rounded-lg">
     <h2 class="text-2xl font-bold mb-6">Gestión de Usuarios</h2>
 

@@ -13,7 +13,10 @@ public class GestionUsuarioDAO {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM usuarios";
 
-        try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = clsConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 lista.add(new Usuario(
                         rs.getInt("id"),
@@ -31,7 +34,9 @@ public class GestionUsuarioDAO {
     public List<Usuario> filtrarUsuarios(String campo, String valor) {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM usuarios WHERE " + campo + " LIKE ?";
-        try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = clsConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, "%" + valor + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -51,7 +56,9 @@ public class GestionUsuarioDAO {
 
     public boolean crearUsuario(String nombre, String correo, String contrasena, String rol, String salonIdStr) {
         String sql = "INSERT INTO usuarios (nombre, correo, contraseña, rol) VALUES (?, ?, SHA2(?, 256), ?)";
-        try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = clsConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             ps.setString(1, nombre);
             ps.setString(2, correo);
             ps.setString(3, contrasena);
@@ -71,6 +78,10 @@ public class GestionUsuarioDAO {
                         if ("docente".equals(rol)) {
                             insertarDocente(usuarioId);
                         }
+
+                        String accion = "Crear usuario";
+                        String descripcion = "Se creó el usuario ID: " + usuarioId + ", nombre: " + nombre + ", rol: " + rol;
+                        registrarActividad(usuarioId, accion, descripcion, "");
                     }
                 }
                 return true;
@@ -83,7 +94,8 @@ public class GestionUsuarioDAO {
 
     private void insertarEstudiante(int usuarioId, int salonId) throws SQLException {
         String sql = "INSERT INTO estudiantes (usuario_id, salon_id) VALUES (?, ?)";
-        try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = clsConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, usuarioId);
             ps.setInt(2, salonId);
             ps.executeUpdate();
@@ -92,7 +104,8 @@ public class GestionUsuarioDAO {
 
     private void insertarDocente(int usuarioId) throws SQLException {
         String sql = "INSERT INTO docentes (usuario_id) VALUES (?)";
-        try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = clsConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, usuarioId);
             ps.executeUpdate();
         }
@@ -100,11 +113,20 @@ public class GestionUsuarioDAO {
 
     public boolean editarUsuario(int id, String nombre, String correo) {
         String sql = "UPDATE usuarios SET nombre = ?, correo = ? WHERE id = ?";
-        try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (Connection conn = clsConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, nombre);
             ps.setString(2, correo);
             ps.setInt(3, id);
-            return ps.executeUpdate() > 0;
+            int rows = ps.executeUpdate();
+
+            if (rows > 0) {
+                String accion = "Editar usuario";
+                String descripcion = "Se editó el usuario ID: " + id + ", nuevo nombre: " + nombre + ", nuevo correo: " + correo;
+                registrarActividad(id, accion, descripcion, "");
+                return true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -115,22 +137,30 @@ public class GestionUsuarioDAO {
         try (Connection conn = clsConnection.getConnection()) {
             conn.setAutoCommit(false);
 
-            // Primero eliminar de estudiantes
+            // No eliminar logs
+
+            // Eliminar de estudiantes
             try (PreparedStatement psEst = conn.prepareStatement("DELETE FROM estudiantes WHERE usuario_id = ?")) {
                 psEst.setInt(1, id);
                 psEst.executeUpdate();
             }
 
-            // Luego eliminar de docentes
+            // Eliminar de docentes
             try (PreparedStatement psDoc = conn.prepareStatement("DELETE FROM docentes WHERE usuario_id = ?")) {
                 psDoc.setInt(1, id);
                 psDoc.executeUpdate();
             }
 
-            // Finalmente eliminar de usuarios
+            // Registrar log ANTES de eliminar el usuario
+            String accion = "Eliminar usuario";
+            String descripcion = "Se eliminó el usuario ID: " + id;
+            registrarActividad(id, accion, descripcion, "");
+
+            // Finalmente usuarios
             try (PreparedStatement psUsu = conn.prepareStatement("DELETE FROM usuarios WHERE id = ?")) {
                 psUsu.setInt(1, id);
                 int rows = psUsu.executeUpdate();
+
                 if (rows > 0) {
                     conn.commit();
                     return true;
@@ -149,7 +179,10 @@ public class GestionUsuarioDAO {
     public List<String[]> obtenerSalones() {
         List<String[]> salones = new ArrayList<>();
         String sql = "SELECT id, nombre FROM salones";
-        try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql); ResultSet rs = ps.executeQuery()) {
+        try (Connection conn = clsConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 salones.add(new String[]{String.valueOf(rs.getInt("id")), rs.getString("nombre")});
             }
@@ -158,4 +191,38 @@ public class GestionUsuarioDAO {
         }
         return salones;
     }
+
+    // Método privado para registrar logs
+    private void registrarActividad(int usuarioId, String accion, String descripcion, String ip) {
+        String sqlUsuario = "SELECT nombre, correo FROM usuarios WHERE id = ?";
+        String nombre = "";
+        String correo = "";
+
+        try (Connection conn = clsConnection.getConnection();
+             PreparedStatement psUser = conn.prepareStatement(sqlUsuario)) {
+
+            psUser.setInt(1, usuarioId);
+            try (ResultSet rs = psUser.executeQuery()) {
+                if (rs.next()) {
+                    nombre = rs.getString("nombre");
+                    correo = rs.getString("correo");
+                }
+            }
+
+            String sql = "CALL registrar_log(?, ?, ?, ?, ?, ?)";
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                ps.setInt(1, usuarioId);
+                ps.setString(2, nombre);         // usuario_nombre
+                ps.setString(3, correo);         // usuario_correo
+                ps.setString(4, accion);
+                ps.setString(5, descripcion);
+                ps.setString(6, ip);
+                ps.executeUpdate();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 }

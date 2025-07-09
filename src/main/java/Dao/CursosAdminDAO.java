@@ -12,13 +12,13 @@ public class CursosAdminDAO {
     public List<Curso> obtenerCursos() {
         List<Curso> lista = new ArrayList<>();
         String sql = "SELECT c.id, m.nombre AS nombreMateria, s.nombre AS nombreSalon, " +
-             "       p.nombre AS nombrePeriodo, u.nombre AS nombreDocente " +
-             "  FROM cursos c " +
-             "  JOIN materias m ON c.materia_id = m.id " +
-             "  JOIN salones s ON c.salon_id = s.id " +
-             "  JOIN periodos_academicos p ON c.periodo_id = p.id " +
-             "  JOIN docentes d ON m.docente_id = d.id " +
-             "  JOIN usuarios u ON d.usuario_id = u.id";
+                     "p.nombre AS nombrePeriodo, u.nombre AS nombreDocente " +
+                     "FROM cursos c " +
+                     "JOIN materias m ON c.materia_id = m.id " +
+                     "JOIN salones s ON c.salon_id = s.id " +
+                     "JOIN periodos_academicos p ON c.periodo_id = p.id " +
+                     "JOIN docentes d ON m.docente_id = d.id " +
+                     "JOIN usuarios u ON d.usuario_id = u.id";
         try (Connection conn = clsConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {

@@ -5,12 +5,6 @@
 <%@page import="Model.EstudianteNotaDTO"%>
 <%@page import="java.util.List"%>
 <%
-    Usuario u = (Usuario) session.getAttribute("usuario");
-    if (u == null || !u.getRol().equalsIgnoreCase("docente")) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
-
     List<String> salones = (List<String>) request.getAttribute("salones");
     List<Evaluacion> evaluaciones = (List<Evaluacion>) request.getAttribute("evaluaciones");
     List<EstudianteNotaDTO> estudiantes = (List<EstudianteNotaDTO>) request.getAttribute("estudiantes");

@@ -1,13 +1,6 @@
 
 <%@page import="Model.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%
-    Usuario u = (Usuario) session.getAttribute("usuario");
-    if (u == null || !u.getRol().equalsIgnoreCase("estudiante")) {
-        response.sendRedirect("login.jsp");
-        return;
-    }
-%>
 <div class="max-w-4xl mx-auto">
     <h1 class="text-2xl font-bold mb-4 text-gray-800">Mis Notas</h1>
 

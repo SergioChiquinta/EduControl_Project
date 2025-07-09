@@ -89,7 +89,7 @@ document.addEventListener('click', (event) => {
 
 // Sistema de enrutamiento mejorado
 const routes = {
-    'resumenEstudiante.jsp': 'resumenEstudiante.jsp',
+    'ResumenEstudianteController': 'ResumenEstudianteController',
     'estudianteNotas.jsp': 'estudianteNotas.jsp',
     'reportes.jsp': 'ReporteController',
     'configuracion.jsp': 'configuracion.jsp'
@@ -200,7 +200,7 @@ function loadInitialPage() {
     if (pageParam && routes[pageParam]) {
         loadPage(pageParam);
     } else {
-        loadPage('resumenEstudiante.jsp');
+        loadPage('ResumenEstudianteController');
     }
 }
 

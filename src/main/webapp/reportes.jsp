@@ -87,14 +87,3 @@
         </table>
     </div>
 </div>
-
-<!-- Al final de reportes.jsp -->
-<script>
-    if (!window.reportesScriptLoaded) {
-        window.reportesScriptLoaded = true;
-        const script = document.createElement('script');
-        script.src = 'js/reportes.js?t=' + new Date().getTime();
-        script.defer = true;
-        document.body.appendChild(script);
-    }
-</script>

@@ -89,7 +89,7 @@ document.addEventListener('click', (event) => {
 
 // Sistema de enrutamiento mejorado
 const routes = {
-    'resumenAdmin.jsp': 'resumenAdmin.jsp',
+    'ResumenAdminController': 'ResumenAdminController',
     'GestionUsuariosController': 'GestionUsuariosController',
     'AsignaturasAdminController': 'AsignaturasAdminController',
     'CursosAdminController': 'CursosAdminController',
@@ -220,7 +220,8 @@ function loadInitialPage() {
     if (pageParam && routes[pageParam]) {
         loadPage(pageParam);
     } else {
-        loadPage('resumenAdmin.jsp');
+        // Aquí defines la vista por defecto al abrir
+        loadPage("ResumenAdminController");
     }
 }
 

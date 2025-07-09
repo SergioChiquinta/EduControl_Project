@@ -7,20 +7,6 @@
         response.sendRedirect("login.jsp");
         return;
     }
-
-    String mensaje = (String) session.getAttribute("mensaje_bienvenida");
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    System.out.println("Usuario en sesión: " + usuario);
-    if (usuario == null) {
-        System.out.println("No hay usuario en sesión");
-        response.sendRedirect("login.jsp");
-        return;
-    }
-    if (!"docente".equals(usuario.getRol())) {
-        System.out.println("Rol incorrecto: " + usuario.getRol());
-        response.sendRedirect("login.jsp");
-        return;
-    }
 %>
 <%@ page import="Model.Usuario" %>
 <!DOCTYPE html>
@@ -63,7 +49,7 @@
             <div class="p-4">
                 <ul>
                     <li class="mb-2">
-                        <a href="#" data-page="resumenDocente.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                        <a href="#" data-page="ResumenDocenteController" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                             <i class="fas fa-tachometer-alt text-center w-6"></i>
                             <span class="sidebar-text ml-3">Dashboard</span>
                         </a>
@@ -116,3 +102,12 @@
 
     </body>
 </html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const defaultLink = document.querySelector('a.sidebar-link[data-page="ResumenDocenteController"]');
+        if (defaultLink) {
+            defaultLink.click();
+        }
+    });
+</script>

@@ -34,7 +34,8 @@ public class ConfiguracionUsuarioDAO {
         String sqlConPass = "UPDATE usuarios SET nombre = ?, correo = ?, contraseña = SHA2(?, 256) WHERE id = ?";
 
         try (Connection conn = clsConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(nuevaContrasena != null && !nuevaContrasena.isEmpty() ? sqlConPass : sqlSinPass)) {
+             PreparedStatement ps = conn.prepareStatement(
+                 (nuevaContrasena != null && !nuevaContrasena.isEmpty()) ? sqlConPass : sqlSinPass)) {
 
             ps.setString(1, usuario.getUsername());
             ps.setString(2, usuario.getCorreo());

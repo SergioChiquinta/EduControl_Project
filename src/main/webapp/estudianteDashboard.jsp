@@ -1,29 +1,14 @@
 
 <%@page import="Model.Usuario"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ page import="Model.Usuario" %>
 <%
     Usuario u = (Usuario) session.getAttribute("usuario");
     if (u == null || !u.getRol().equalsIgnoreCase("estudiante")) {
         response.sendRedirect("login.jsp");
         return;
     }
-
-    String mensaje = (String) session.getAttribute("mensaje_bienvenida");
-    
-    Usuario usuario = (Usuario) session.getAttribute("usuario");
-    System.out.println("Usuario en sesión: " + usuario);
-    if (usuario == null) {
-        System.out.println("No hay usuario en sesión");
-        response.sendRedirect("login.jsp");
-        return;
-    }
-    if (!"estudiante".equals(usuario.getRol())) {
-        System.out.println("Rol incorrecto: " + usuario.getRol());
-        response.sendRedirect("login.jsp");
-        return;
-    }
 %>
-<%@ page import="Model.Usuario" %>
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -64,7 +49,7 @@
             <div class="p-4">
                 <ul>
                     <li class="mb-2">
-                        <a href="#" data-page="resumenEstudiante.jsp" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
+                        <a href="#" data-page="ResumenEstudianteController" class="sidebar-link flex items-center py-2 px-4 rounded hover:bg-[#022f65]">
                             <i class="fas fa-tachometer-alt text-center w-6"></i>
                             <span class="sidebar-text ml-3">Dashboard</span>
                         </a>
@@ -104,3 +89,12 @@
 
     </body>
 </html>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const defaultLink = document.querySelector('a.sidebar-link[data-page="ResumenEstudianteController"]');
+        if (defaultLink) {
+            defaultLink.click();
+        }
+    });
+</script>

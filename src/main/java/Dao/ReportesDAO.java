@@ -24,7 +24,6 @@ public class ReportesDAO {
                 + "ORDER BY r.fecha_generacion DESC";
 
         try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setInt(1, usuarioId);
             ResultSet rs = ps.executeQuery();
 
@@ -40,25 +39,21 @@ public class ReportesDAO {
                 r.setUsuarioId(rs.getInt("usuario_id"));
                 r.setPdf(rs.getBytes("pdf"));
 
-                // Los campos nuevos con nombres ya procesados
                 r.setNombreEstudiante(rs.getString("nombre_estudiante"));
                 r.setNombreSalon(rs.getString("nombre_salon"));
                 r.setNombrePeriodo(rs.getString("nombre_periodo"));
 
                 lista.add(r);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return lista;
     }
 
     public boolean insertarReporte(Reporte r) {
         String sql = "INSERT INTO reportes (estudiante_id, salon_id, periodo_id, usuario_id, promedio_general, estado_academico, pdf) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setInt(1, r.getEstudianteId());
             ps.setInt(2, r.getSalonId());
             ps.setInt(3, r.getPeriodoId());
@@ -78,13 +73,11 @@ public class ReportesDAO {
     public byte[] obtenerPDF(int reporteId) {
         String sql = "SELECT pdf FROM reportes WHERE id = ?";
         try (Connection conn = clsConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
             ps.setInt(1, reporteId);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getBytes("pdf");
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -58,4 +58,23 @@ public class UsuarioDAO {
         }
         return docenteId;
     }
+
+    // Obtiene ID de estudiante por ID de usuario
+    public Integer obtenerIdEstudiantePorIdUsuario(int idUsuario) {
+        Integer estudianteId = null;
+        String sql = "SELECT id FROM estudiantes WHERE usuario_id = ?";
+        try (Connection con = clsConnection.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, idUsuario);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    estudianteId = rs.getInt("id");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el ID del estudiante por ID de usuario: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return estudianteId;
+    }
+
 }
