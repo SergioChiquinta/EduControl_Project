@@ -89,7 +89,12 @@ public class ReporteController extends HttpServlet {
 
                 // Calcular promedio general
                 double promedio = datosDAO.calcularPromedioEstudiante(estudianteId, periodoId);
-                String estado = promedio >= 11 ? "Aprobado" : "Desaprobado";
+                String estado;
+                if (promedio == 0) {
+                    estado = "Nulo";
+                } else {
+                    estado = promedio >= 11 ? "Aprobado" : "Desaprobado";
+                }
 
                 String nombreEstudiante = datosDAO.obtenerNombre("usuarios_estudiante", estudianteId);
                 String salon = datosDAO.obtenerNombre("salones", salonId);

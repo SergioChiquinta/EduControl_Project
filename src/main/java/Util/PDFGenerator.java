@@ -81,12 +81,38 @@ public class PDFGenerator {
                     .setFontSize(13)
                     .setMarginBottom(5));
 
-            // Estado académico con color
-            DeviceRgb estadoColor = estado.equalsIgnoreCase("Aprobado") ? new DeviceRgb(0, 153, 0) : new DeviceRgb(204, 0, 0);
+            // Estado académico con color          
+            // Verificar si todas las notas son 0 o null
+            boolean todasCeroOVacias = true;
+            for (Double promedio : promediosPorMateria.values()) {
+                if (promedio != null && promedio != 0.0) {
+                    todasCeroOVacias = false;
+                    break;
+                }
+            }
+
+            // Si todas son cero o vacías, forzar estado a "Nulo"
+            if (todasCeroOVacias) {
+                estado = "Nulo";
+            }
+
+            // Elegir color según estado
+            DeviceRgb estadoColor;
+            if (estado.equalsIgnoreCase("Aprobado")) {
+                estadoColor = new DeviceRgb(0, 153, 0); // Verde
+            } else if (estado.equalsIgnoreCase("Desaprobado")) {
+                estadoColor = new DeviceRgb(204, 0, 0); // Rojo
+            } else if (estado.equalsIgnoreCase("Nulo")) {
+                estadoColor = new DeviceRgb(0, 102, 204); // Azul
+            } else {
+                estadoColor = (DeviceRgb) ColorConstants.BLACK; // Color por defecto
+            }
+
+            // Agregar párrafo de estado con color
             Paragraph estadoParagraph = new Paragraph("Estado Académico: " + estado)
-                    .setFont(fontBold)
-                    .setFontSize(13)
-                    .setFontColor(estadoColor);
+                .setFont(fontBold)
+                .setFontSize(13)
+                .setFontColor(estadoColor);
             document.add(estadoParagraph);
 
             document.close();
