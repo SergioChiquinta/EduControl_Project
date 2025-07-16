@@ -98,7 +98,15 @@ public class ReporteController extends HttpServlet {
                 Map<String, Double> promediosMateria = datosDAO.calcularPromediosPorMateria(estudianteId, periodoId);
                 double promedioGeneral = promediosMateria.values().stream().mapToDouble(Double::doubleValue).average().orElse(0.0);
 
-                byte[] pdf = PDFGenerator.generarPDFReporte(nombreEstudiante, salon, periodo, promediosMateria, promedioGeneral, estado);
+                byte[] pdf = PDFGenerator.generarPDFReporte(
+                    getServletContext(), // ✔️ se pasa aquí
+                    nombreEstudiante,
+                    salon,
+                    periodo,
+                    promediosMateria,
+                    promedioGeneral,
+                    estado
+                );
 
                 Reporte r = new Reporte();
                 r.setEstudianteId(estudianteId);
